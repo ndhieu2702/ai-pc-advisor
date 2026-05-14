@@ -23,6 +23,9 @@ GROUP_LABELS = {
     "ai_game_do_hoa": "AI + Game / Đồ họa",
     "may_mong_nhe_pin_lau": "Máy mỏng nhẹ, pin lâu",
     "ai_tiet_kiem_cloud": "AI tiết kiệm + Cloud",
+    "deep_learning_co_ban": "Deep Learning cơ bản",
+    "deep_learning_hieu_nang": "Deep Learning hiệu năng",
+    "computer_vision_hieu_nang": "Computer Vision hiệu năng",
     "cau_hinh_can_bang": "Cấu hình cân bằng",
 }
 
@@ -42,6 +45,9 @@ def pretty_group(name):
         "ai_game_do_hoa": "AI + Game / Đồ họa",
         "may_mong_nhe_pin_lau": "Máy mỏng nhẹ, pin lâu",
         "ai_tiet_kiem_cloud": "AI tiết kiệm + Cloud",
+        "deep_learning_co_ban": "Deep Learning cơ bản",
+        "deep_learning_hieu_nang": "Deep Learning hiệu năng",
+        "computer_vision_hieu_nang": "Computer Vision hiệu năng",
         "cau_hinh_can_bang": "Cấu hình cân bằng",
     }
     return mapping.get(name, name)
@@ -211,12 +217,12 @@ def inject_css():
 
         [data-testid="stSidebar"] {
             background: #ffffff;
-            border-right: 1px solid var(--border);
+            border-right: 1px solid #e2e8f0;
             box-shadow: 8px 0 30px rgba(15, 23, 42, 0.04);
         }
 
         [data-testid="stSidebar"] > div:first-child {
-            padding: 2rem 1.4rem;
+            padding: 1.35rem 1.2rem;
         }
 
         [data-testid="stSidebar"] label,
@@ -248,22 +254,50 @@ def inject_css():
 
         [data-testid="stSidebar"] .stButton > button {
             width: 100%;
-            height: 3.35rem;
-            border-radius: 0.7rem;
-            border: 1px solid var(--border);
-            background: #ffffff;
-            color: var(--text);
-            font-weight: 700;
+            height: 46px;
+            border-radius: 14px !important;
+            border: 1px solid #e2e8f0 !important;
+            background: #ffffff !important;
+            color: #0f172a !important;
+            font-weight: 700 !important;
+            text-align: left !important;
             justify-content: flex-start;
-            padding-left: 1rem;
-            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+            padding-left: 14px !important;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+            margin-bottom: 8px;
+        }
+
+        [data-testid="stSidebar"] .stButton > button:hover {
+            background: #eff6ff !important;
+            border-color: #93c5fd !important;
+            color: #2563eb !important;
         }
 
         [data-testid="stSidebar"] .stButton > button[kind="primary"] {
-            background: linear-gradient(135deg, #2563eb 0%, #0f6bff 100%);
-            color: #ffffff;
-            border: 1px solid #2563eb;
-            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.28);
+            background: #2563eb !important;
+            border-color: #2563eb !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.22) !important;
+        }
+
+        [data-testid="stSidebar"] .stButton > button[kind="primary"] p,
+        [data-testid="stSidebar"] .stButton > button[kind="primary"] span {
+            color: #ffffff !important;
+        }
+
+        [data-testid="stSidebar"] .stButton > button:not([kind="primary"]) p,
+        [data-testid="stSidebar"] .stButton > button:not([kind="primary"]) span {
+            color: #0f172a !important;
+        }
+
+        [data-testid="stSidebar"] .stButton > button:hover p,
+        [data-testid="stSidebar"] .stButton > button:hover span {
+            color: #2563eb !important;
+        }
+
+        [data-testid="stSidebar"] .stButton > button[kind="primary"]:hover p,
+        [data-testid="stSidebar"] .stButton > button[kind="primary"]:hover span {
+            color: #ffffff !important;
         }
 
         [data-testid="stSidebar"] .stSelectbox > div > div {
@@ -309,6 +343,66 @@ def inject_css():
             font-size: 2.15rem;
             box-shadow: 0 14px 34px rgba(37, 99, 235, 0.13);
             flex: 0 0 auto;
+        }
+
+        .header-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 22px 26px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 8px 20px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 18px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: #dbeafe;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .logo-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #0f172a;
+            line-height: 1.15;
+        }
+
+        .logo-subtitle {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .sidebar-section-title {
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 12px 0 8px 0;
+        }
+
+        .active-mode-card {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 14px;
+            padding: 12px 14px;
+            color: #1d4ed8;
+            font-weight: 700;
+            margin-top: 16px;
         }
 
         .result-card {
@@ -548,6 +642,148 @@ def inject_css():
             margin-top: 12px;
         }
 
+        .stCheckbox label,
+        .stRadio label,
+        .stSelectbox label,
+        .stTextInput label,
+        .stNumberInput label,
+        [data-testid="stWidgetLabel"],
+        [data-testid="stMarkdownContainer"],
+        label,
+        p,
+        span {
+            color: #0f172a !important;
+        }
+
+        [data-testid="stSidebar"] label,
+        [data-testid="stSidebar"] span,
+        [data-testid="stSidebar"] p {
+            color: #0f172a !important;
+        }
+
+        .stButton > button {
+            border-radius: 12px !important;
+            font-weight: 700 !important;
+            padding: 0.65rem 1.1rem !important;
+        }
+
+        button[kind="primary"],
+        .main .stButton button {
+            background-color: #2563eb !important;
+            border: 1px solid #2563eb !important;
+            color: #ffffff !important;
+        }
+
+        button[kind="primary"] p,
+        button[kind="primary"] span,
+        .main .stButton button p,
+        .main .stButton button span {
+            color: #ffffff !important;
+        }
+
+        div[data-baseweb="select"] > div {
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 12px !important;
+            color: #0f172a !important;
+        }
+
+        div[data-baseweb="select"] span {
+            color: #0f172a !important;
+        }
+
+        .page-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+            margin-bottom: 20px;
+        }
+
+        .page-card .section-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .section-desc {
+            color: #475569;
+            font-size: 15px;
+            margin-bottom: 16px;
+            line-height: 1.55;
+        }
+
+        .test-pass {
+            background: #ecfdf5;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin: 8px 0;
+            font-weight: 700;
+        }
+
+        .test-fail {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin: 8px 0;
+            font-weight: 700;
+        }
+
+        .condition-ok {
+            background: #ecfdf5;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin: 8px 0;
+        }
+
+        .condition-bad {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin: 8px 0;
+        }
+
+        .summary-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        .summary-value {
+            color: #2563eb;
+            font-size: 28px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .summary-label {
+            color: #475569;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        .result-group {
+            color: #2563eb !important;
+        }
+
+        .robot-badge,
+        .metric-icon {
+            color: #2563eb !important;
+        }
+
         .footer {
             text-align: center;
             color: var(--muted);
@@ -555,6 +791,157 @@ def inject_css():
             margin-top: 1.3rem;
             padding: 1rem 0 0.25rem 0;
             font-size: 0.92rem;
+        }
+
+        .main .block-container {
+            max-width: 1280px !important;
+            padding-top: 2rem !important;
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
+            min-height: 90vh;
+        }
+
+        @media (min-width: 1400px) {
+            .main .block-container {
+                max-width: 1400px !important;
+            }
+        }
+
+        .page-card,
+        .card,
+        .result-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 22px !important;
+            padding: 30px 34px !important;
+            box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08) !important;
+            margin-bottom: 24px !important;
+        }
+
+        .header-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 24px !important;
+            padding: 34px 38px !important;
+            box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08) !important;
+            margin-bottom: 24px !important;
+        }
+
+        .header-row {
+            margin-bottom: 0 !important;
+        }
+
+        .main-title {
+            font-size: 44px !important;
+            font-weight: 900 !important;
+            color: #0f172a !important;
+            margin: 0 !important;
+        }
+
+        .sub-title {
+            font-size: 17px !important;
+            color: #64748b !important;
+            margin-top: 10px !important;
+        }
+
+        .robot-badge {
+            width: 74px !important;
+            height: 74px !important;
+            border-radius: 999px !important;
+            background: #dbeafe !important;
+            color: #2563eb !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 30px !important;
+            box-shadow: 0 16px 36px rgba(37, 99, 235, 0.18) !important;
+        }
+
+        .stCheckbox label p,
+        .stCheckbox label,
+        [data-testid="stWidgetLabel"] p {
+            font-size: 16px !important;
+            color: #0f172a !important;
+            font-weight: 600 !important;
+        }
+
+        div[data-baseweb="select"] {
+            font-size: 16px !important;
+        }
+
+        .main .stButton > button {
+            height: 52px !important;
+            border-radius: 16px !important;
+            font-size: 16px !important;
+            font-weight: 800 !important;
+            padding: 0 22px !important;
+            background: #2563eb !important;
+            color: #ffffff !important;
+            border: 1px solid #2563eb !important;
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.24) !important;
+        }
+
+        .main .stButton > button:hover {
+            background: #1d4ed8 !important;
+            border-color: #1d4ed8 !important;
+        }
+
+        [data-testid="stSidebar"] {
+            min-width: 300px !important;
+            max-width: 320px !important;
+            background: #ffffff !important;
+            border-right: 1px solid #e2e8f0 !important;
+        }
+
+        [data-testid="stSidebar"] .stButton > button {
+            height: 50px !important;
+            border-radius: 14px !important;
+            font-size: 15px !important;
+        }
+
+        .metric-box {
+            min-height: 190px !important;
+            padding: 24px 20px !important;
+            border-radius: 20px !important;
+        }
+
+        .metric-icon {
+            font-size: 38px !important;
+        }
+
+        .metric-title {
+            font-size: 18px !important;
+        }
+
+        .metric-text {
+            font-size: 15px !important;
+            line-height: 1.55 !important;
+        }
+
+        .mini-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 22px 24px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            min-height: 120px;
+        }
+
+        .mini-card-title {
+            color: #0f172a;
+            font-size: 17px;
+            font-weight: 850;
+            margin-bottom: 8px;
+        }
+
+        .mini-card-text {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .footer {
+            margin-top: 32px !important;
         }
         </style>
         """,
@@ -688,12 +1075,14 @@ def run_system_tests():
 def render_header():
     st.markdown(
         """
-        <div class="header-row">
-            <div>
-                <h1 class="main-title">AI PC Advisor</h1>
-                <div class="sub-title">HỆ CHUYÊN GIA TƯ VẤN CẤU HÌNH MÁY TÍNH CHO SINH VIÊN AI</div>
+        <div class="header-card">
+            <div class="header-row">
+                <div>
+                    <h1 class="main-title">AI PC Advisor</h1>
+                    <div class="sub-title">Hệ chuyên gia tư vấn cấu hình máy tính cho sinh viên AI</div>
+                </div>
+                <div class="robot-badge">🤖</div>
             </div>
-            <div class="robot-badge">🤖</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -843,20 +1232,52 @@ def render_history_page():
 
 
 def render_test_page():
-    lines, passed, failed = run_system_tests()
-    result_lines = "<br>".join(html_escape(line) for line in lines)
+    he = HeChuyenGiaTuVanMayTinhAI()
+    ket_qua = he.kiem_thu_he_thong_data()
     st.markdown(
-        f"""
-        <div class="card">
+        """
+        <div class="page-card">
             <div class="section-title">🛡️ Kiểm thử hệ thống</div>
-            <div class="notice">Chức năng kiểm thử hệ thống hiện chạy tốt nhất ở bản terminal bằng menu số 5. Bản web vẫn chạy lại các test case từ <b>data/sample_cases.json</b>.</div>
-            <div class="explain-text">{result_lines}</div>
-            <br>
-            <div class="explain-text"><b>Tổng số test:</b> {passed + failed} &nbsp; | &nbsp; <b>Đúng:</b> {passed} &nbsp; | &nbsp; <b>Sai:</b> {failed}</div>
+            <div class="section-desc">
+                Tự động chạy các test case trong data/sample_cases.json để kiểm tra bộ suy diễn.
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
+
+    col_total, col_passed, col_failed = st.columns(3, gap="large")
+    summary_items = [
+        (col_total, "Tổng số test", ket_qua["total"]),
+        (col_passed, "Đúng", ket_qua["passed"]),
+        (col_failed, "Sai", ket_qua["failed"]),
+    ]
+    for col, label, value in summary_items:
+        with col:
+            st.markdown(
+                f"""
+                <div class="summary-box">
+                    <div class="summary-value">{value}</div>
+                    <div class="summary-label">{html_escape(label)}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    st.write("")
+    for detail in ket_qua["details"]:
+        class_name = "test-pass" if detail["passed"] else "test-fail"
+        status = "PASS" if detail["passed"] else "FAIL"
+        st.markdown(
+            f"""
+            <div class="{class_name}">
+                {status}: {html_escape(detail["name"])} |
+                Expected: {html_escape(pretty_group(detail["expected"]))} |
+                Got: {html_escape(pretty_group(detail["got"]))}
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 
 def render_dashboard(result):
@@ -876,123 +1297,324 @@ def render_dashboard(result):
                 st.text_input("Đường dẫn", value=st.session_state.export_path, disabled=True)
 
 
-def build_known_from_inputs():
-    budget_map = {"Thấp": "thap", "Trung bình": "trung_binh", "Cao": "cao"}
+def budget_label_to_value(label):
+    mapping = {"Thấp": "thap", "Trung bình": "trung_binh", "Cao": "cao"}
+    return mapping.get(label, "thap")
+
+
+def budget_index(value):
+    values = ["thap", "trung_binh", "cao"]
+    return values.index(value) if value in values else 0
+
+
+def render_input_form(prefix, defaults=None):
+    defaults = defaults or {}
+    left, right = st.columns(2, gap="large")
+
+    with left:
+        hoc_lap_trinh = st.checkbox(
+            "Học lập trình",
+            value=defaults.get("hoc_lap_trinh", True),
+            key=f"{prefix}_hoc_lap_trinh",
+        )
+        hoc_ml = st.checkbox(
+            "Machine Learning",
+            value=defaults.get("hoc_machine_learning", False),
+            key=f"{prefix}_hoc_ml",
+        )
+        hoc_dl = st.checkbox(
+            "Deep Learning",
+            value=defaults.get("hoc_deep_learning", False),
+            key=f"{prefix}_hoc_dl",
+        )
+        xu_ly_anh = st.checkbox(
+            "Xử lý ảnh / Computer Vision",
+            value=defaults.get("xu_ly_anh_video", False),
+            key=f"{prefix}_xu_ly_anh",
+        )
+
+    with right:
+        game_do_hoa = st.checkbox(
+            "Game / Đồ họa",
+            value=defaults.get("choi_game_do_hoa", False),
+            key=f"{prefix}_game_do_hoa",
+        )
+        may_nhe = st.checkbox(
+            "Máy nhẹ, pin lâu",
+            value=defaults.get("can_may_nhe_pin_lau", False),
+            key=f"{prefix}_may_nhe",
+        )
+        can_nang_cap = st.checkbox(
+            "Cần nâng cấp RAM/SSD",
+            value=defaults.get("can_nang_cap", True),
+            key=f"{prefix}_can_nang_cap",
+        )
+        ngan_sach_label = st.selectbox(
+            "Ngân sách",
+            ["Thấp", "Trung bình", "Cao"],
+            index=budget_index(defaults.get("ngan_sach", "thap")),
+            key=f"{prefix}_ngan_sach_label",
+        )
+
     return {
-        "hoc_lap_trinh": st.session_state.get("hoc_lap_trinh", True),
-        "hoc_machine_learning": st.session_state.get("hoc_ml", True),
-        "hoc_deep_learning": st.session_state.get("hoc_dl", True),
-        "xu_ly_anh_video": st.session_state.get("xu_ly_anh", False),
-        "choi_game_do_hoa": st.session_state.get("game_do_hoa", False),
-        "can_may_nhe_pin_lau": st.session_state.get("may_nhe", False),
-        "can_nang_cap": st.session_state.get("can_nang_cap", True),
-        "ngan_sach": budget_map.get(st.session_state.get("ngan_sach_label", "Cao"), "cao"),
+        "hoc_lap_trinh": hoc_lap_trinh,
+        "hoc_machine_learning": hoc_ml,
+        "hoc_deep_learning": hoc_dl,
+        "xu_ly_anh_video": xu_ly_anh,
+        "choi_game_do_hoa": game_do_hoa,
+        "can_may_nhe_pin_lau": may_nhe,
+        "can_nang_cap": can_nang_cap,
+        "ngan_sach": budget_label_to_value(ngan_sach_label),
     }
 
 
+def render_consultation_page():
+    st.markdown(
+        """
+        <div class="page-card">
+            <div class="section-title">⚡ Tư vấn cấu hình</div>
+            <div class="section-desc">
+                Nhập nhu cầu học tập và ngân sách, hệ chuyên gia sẽ suy diễn nhóm nhu cầu phù hợp và đề xuất cấu hình.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    with st.container(border=True):
+        st.markdown('<div class="section-title">Thông tin đầu vào</div>', unsafe_allow_html=True)
+        known = render_input_form("consultation")
+
+        if st.button("⚡ Tư vấn cấu hình", type="primary", key="consultation_submit"):
+            st.session_state.consultation_result = infer_result(known, save_outputs=True)
+            st.session_state.export_message = "Đã xuất kết quả tư vấn"
+            st.session_state.export_path = st.session_state.consultation_result["txt_path"] or ""
+            st.toast("Đã xuất kết quả tư vấn", icon="✅")
+
+    if st.session_state.get("consultation_result"):
+        st.write("")
+        render_dashboard(st.session_state.consultation_result)
+    else:
+        st.write("")
+        cols = st.columns(3, gap="large")
+        guide_cards = [
+            ("1. Nhập dữ liệu", "Chọn nhu cầu học tập, tác vụ AI và mức ngân sách hiện tại."),
+            ("2. Hệ thống suy diễn", "Bộ luật và điểm phù hợp sẽ được tính để chọn nhóm nhu cầu chính."),
+            ("3. Nhận cấu hình", "Xem CPU, RAM, SSD, GPU, màn hình và giải thích kết luận."),
+        ]
+        for col, (title, text) in zip(cols, guide_cards):
+            with col:
+                st.markdown(
+                    f"""
+                    <div class="mini-card">
+                        <div class="mini-card-title">{html_escape(title)}</div>
+                        <div class="mini-card-text">{html_escape(text)}</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+
+def render_demo_page():
+    st.markdown(
+        """
+        <div class="page-card">
+            <div class="section-title">📦 Chạy demo mẫu</div>
+            <div class="section-desc">Chọn một bộ dữ liệu mẫu từ data/sample_cases.json để chạy thử hệ chuyên gia.</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    demo_cases, demo_error = load_sample_cases()
+    if demo_error:
+        st.error(demo_error)
+        return
+    if not demo_cases:
+        st.warning("Không đọc được dữ liệu demo mẫu")
+        return
+
+    demo_names = [
+        case.get("name", f"Demo {index}")
+        for index, case in enumerate(demo_cases, start=1)
+    ]
+    selected_demo_name = st.selectbox(
+        "Chọn demo mẫu",
+        demo_names,
+        key="demo_page_case",
+        format_func=pretty_demo_name,
+    )
+
+    if st.button("📦 Chạy demo", type="primary", key="demo_page_submit"):
+        selected_case = next(
+            (case for case in demo_cases if case.get("name") == selected_demo_name),
+            None,
+        )
+        if selected_case is None:
+            st.error("Không đọc được dữ liệu demo mẫu")
+        else:
+            st.session_state.demo_result = infer_result(selected_case["input"], save_outputs=True)
+            st.session_state.export_message = "Đã xuất kết quả tư vấn"
+            st.session_state.export_path = st.session_state.demo_result["txt_path"] or ""
+            st.toast(f"Đã chạy demo: {pretty_demo_name(selected_demo_name)}", icon="✅")
+
+    if st.session_state.get("demo_result"):
+        st.write("")
+        render_dashboard(st.session_state.demo_result)
+
+
+def render_backward_chaining_page():
+    st.markdown(
+        """
+        <div class="page-card">
+            <div class="section-title">🔎 Kiểm tra suy diễn lùi</div>
+            <div class="section-desc">
+                Chọn một giả thuyết kết luận, hệ thống sẽ kiểm tra ngược lại các điều kiện cần.
+            </div>
+            <div class="section-desc">
+                Suy diễn lùi bắt đầu từ một giả thuyết kết luận, sau đó hệ thống kiểm tra ngược lại các điều kiện cần để xem giả thuyết đó có phù hợp với dữ liệu hiện tại hay không.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    with st.container(border=True):
+        st.markdown('<div class="section-title">Dữ kiện kiểm tra</div>', unsafe_allow_html=True)
+        known = render_input_form("backward")
+        he = HeChuyenGiaTuVanMayTinhAI()
+        he.known = known
+
+        gia_thuyet = st.selectbox(
+            "Chọn giả thuyết cần kiểm tra",
+            he.danh_sach_gia_thuyet(),
+            format_func=pretty_group,
+            key="gia_thuyet_suy_dien_lui",
+        )
+
+        kiem_tra = st.button("🔎 Kiểm tra giả thuyết", type="primary", key="kiem_tra_gia_thuyet_btn")
+
+    if kiem_tra:
+        ket_qua = he.kiem_tra_gia_thuyet(gia_thuyet)
+        ten_gia_thuyet = pretty_group(ket_qua["gia_thuyet"])
+        trang_thai = (
+            f"✅ Kết luận: Giả thuyết '{ten_gia_thuyet}' phù hợp với dữ liệu hiện tại."
+            if ket_qua["phu_hop"]
+            else f"❌ Kết luận: Giả thuyết '{ten_gia_thuyet}' chưa phù hợp với dữ liệu hiện tại."
+        )
+        cach_suy_luan = (
+            f"Hệ thống giả định trước kết luận là '{ten_gia_thuyet}', sau đó kiểm tra các điều kiện cần. Vì tất cả điều kiện đều đạt nên giả thuyết được chấp nhận."
+            if ket_qua["phu_hop"]
+            else f"Hệ thống giả định trước kết luận là '{ten_gia_thuyet}', nhưng một số điều kiện chưa đạt nên giả thuyết bị bác bỏ."
+        )
+
+        st.markdown(
+            f"""
+            <div class="page-card">
+                <div class="section-title">Kết quả kiểm tra giả thuyết</div>
+                <div class="section-desc"><b>Giả thuyết:</b> {html_escape(ten_gia_thuyet)}</div>
+                <div class="section-desc">{html_escape(trang_thai)}</div>
+                <div class="section-title" style="font-size: 18px; margin-top: 10px;">Các điều kiện hệ thống kiểm tra</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        for dieu_kien in ket_qua["dieu_kien"]:
+            dat = dieu_kien.get("dat", False)
+            dieu_kien_can = dieu_kien.get("dieu_kien_can", dieu_kien.get("mo_ta", ""))
+            du_lieu_hien_tai = dieu_kien.get("du_lieu_hien_tai", "")
+            css_class = "condition-ok" if dat else "condition-bad"
+            icon = "✅" if dat else "❌"
+            condition_html = f"""
+            <div class="{css_class}">
+                <div><b>{icon} Điều kiện cần:</b> {html_escape(dieu_kien_can)}</div>
+                <div style="margin-top: 4px; font-weight: 600;">{html_escape(du_lieu_hien_tai)}</div>
+            </div>
+            """
+            st.markdown(condition_html, unsafe_allow_html=True)
+
+        st.markdown(
+            f"""
+            <div class="page-card">
+                <div class="section-title" style="font-size: 18px; margin-bottom: 8px;">Cách hệ thống suy luận</div>
+                <div class="section-desc">{html_escape(cach_suy_luan)}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
 def initialize_state():
-    if "page" not in st.session_state:
-        st.session_state.page = "dashboard"
+    if "mode" not in st.session_state:
+        st.session_state.mode = "Tư vấn cấu hình"
     if "export_message" not in st.session_state:
         st.session_state.export_message = ""
     if "export_path" not in st.session_state:
         st.session_state.export_path = ""
-    defaults = {
-        "hoc_lap_trinh": True,
-        "hoc_ml": False,
-        "hoc_dl": False,
-        "xu_ly_anh": False,
-        "game_do_hoa": False,
-        "may_nhe": False,
-        "can_nang_cap": True,
-        "ngan_sach_label": "Thấp",
-    }
-    for key, value in defaults.items():
-        st.session_state.setdefault(key, value)
-    if "result" not in st.session_state:
-        cases, _ = load_sample_cases()
-        known = cases[0]["input"].copy() if cases else build_known_from_inputs()
-        st.session_state.result = infer_result(known, save_outputs=False)
+    if "consultation_result" not in st.session_state:
+        st.session_state.consultation_result = None
+    if "demo_result" not in st.session_state:
+        st.session_state.demo_result = None
+
+
+def sidebar_button(label, icon, mode_name):
+    active = st.session_state.mode == mode_name
+    if st.sidebar.button(
+        f"{icon}  {label}",
+        key=f"nav_{mode_name}",
+        type="primary" if active else "secondary",
+        use_container_width=True,
+    ):
+        st.session_state.mode = mode_name
 
 
 def render_sidebar():
-    st.sidebar.markdown("## 📋 Thông tin đầu vào")
-    st.sidebar.checkbox("Học lập trình", key="hoc_lap_trinh")
-    st.sidebar.checkbox("Machine Learning", key="hoc_ml")
-    st.sidebar.checkbox("Deep Learning", key="hoc_dl")
-    st.sidebar.checkbox("Xử lý ảnh / Computer Vision", key="xu_ly_anh")
-    st.sidebar.checkbox("Game / Đồ họa", key="game_do_hoa")
-    st.sidebar.checkbox("Máy nhẹ, pin lâu", key="may_nhe")
-    st.sidebar.checkbox("Cần nâng cấp RAM/SSD", key="can_nang_cap")
-    st.sidebar.selectbox("Ngân sách", ["Thấp", "Trung bình", "Cao"], key="ngan_sach_label")
-
-    demo_cases, demo_error = load_sample_cases()
-    selected_demo_name = None
-    st.sidebar.write("")
-    if demo_error:
-        st.sidebar.error(demo_error)
-    elif not demo_cases:
-        demo_error = "Không đọc được dữ liệu demo mẫu"
-        st.sidebar.error(demo_error)
-    else:
-        demo_names = [case.get("name", f"Demo {index}") for index, case in enumerate(demo_cases, start=1)]
-        selected_demo_name = st.sidebar.selectbox(
-            "Chọn demo mẫu",
-            demo_names,
-            key="demo_sample_name",
-            format_func=pretty_demo_name,
-        )
-
-    st.sidebar.write("")
-    consult_clicked = st.sidebar.button("⚡  Tư vấn cấu hình", type="primary", use_container_width=True)
-    demo_clicked = st.sidebar.button("📦  Chạy demo mẫu", use_container_width=True)
-    history_clicked = st.sidebar.button("🕘  Xem lịch sử", use_container_width=True)
-    test_clicked = st.sidebar.button("🛡️  Kiểm thử hệ thống", use_container_width=True)
-
-    if consult_clicked:
-        known = build_known_from_inputs()
-        st.session_state.result = infer_result(known, save_outputs=True)
-        st.session_state.page = "dashboard"
-        st.session_state.export_message = "Đã xuất kết quả tư vấn"
-        st.session_state.export_path = st.session_state.result["txt_path"] or ""
-        st.toast("Đã xuất kết quả tư vấn", icon="✅")
-
-    if demo_clicked:
-        if demo_error:
-            st.sidebar.error(demo_error)
-        else:
-            selected_case = next(
-                (case for case in demo_cases if case.get("name") == selected_demo_name),
-                None,
-            )
-            if selected_case is None:
-                st.sidebar.error("Không đọc được dữ liệu demo mẫu")
-            else:
-                st.session_state.result = infer_result(selected_case["input"], save_outputs=True)
-                st.session_state.page = "dashboard"
-                st.session_state.export_message = "Đã xuất kết quả tư vấn"
-                st.session_state.export_path = st.session_state.result["txt_path"] or ""
-                st.toast(f"Đã chạy demo: {pretty_demo_name(selected_demo_name)}", icon="✅")
-
-    if history_clicked:
-        st.session_state.page = "history"
-
-    if test_clicked:
-        st.session_state.page = "test"
+    st.sidebar.markdown(
+        """
+        <div class="sidebar-logo">
+            <div class="logo-icon">🤖</div>
+            <div>
+                <div class="logo-title">AI PC Advisor</div>
+                <div class="logo-subtitle">Expert System</div>
+            </div>
+        </div>
+        <div class="sidebar-section-title">Chức năng</div>
+        """,
+        unsafe_allow_html=True,
+    )
+    sidebar_button("Tư vấn cấu hình", "⚡", "Tư vấn cấu hình")
+    sidebar_button("Chạy demo mẫu", "📦", "Chạy demo mẫu")
+    sidebar_button("Xem lịch sử", "🕘", "Xem lịch sử")
+    sidebar_button("Kiểm thử hệ thống", "🛡️", "Kiểm thử hệ thống")
+    sidebar_button("Kiểm tra suy diễn lùi", "🔎", "Kiểm tra suy diễn lùi")
+    st.sidebar.markdown(
+        f"""
+        <div class="active-mode-card">
+            Đang mở: <b>{html_escape(st.session_state.mode)}</b>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def main():
     initialize_state()
     inject_css()
     render_sidebar()
+    mode = st.session_state.mode
     render_header()
 
-    if st.session_state.page == "history":
+    if mode == "Tư vấn cấu hình":
+        render_consultation_page()
+    elif mode == "Chạy demo mẫu":
+        render_demo_page()
+    elif mode == "Xem lịch sử":
         render_history_page()
-    elif st.session_state.page == "test":
+    elif mode == "Kiểm thử hệ thống":
         render_test_page()
-    else:
-        render_dashboard(st.session_state.result)
+    elif mode == "Kiểm tra suy diễn lùi":
+        render_backward_chaining_page()
 
     st.markdown(
         '<div class="footer">AI PC Advisor © 2026 | Hệ chuyên gia tư vấn cấu hình máy tính cho sinh viên AI</div>',

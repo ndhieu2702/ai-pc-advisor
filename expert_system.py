@@ -258,6 +258,166 @@ class HeChuyenGiaTuVanMayTinhAI:
 
         return max(0, min(100, round(certainty)))
 
+    def danh_sach_gia_thuyet(self):
+        """Trả về danh sách các nhóm có thể kiểm tra bằng suy diễn lùi."""
+        return [
+            "lap_trinh_co_ban",
+            "machine_learning_co_ban",
+            "ai_tiet_kiem_cloud",
+            "deep_learning_co_ban",
+            "deep_learning_hieu_nang",
+            "computer_vision_hieu_nang",
+            "ai_game_do_hoa",
+            "may_mong_nhe_pin_lau",
+            "cau_hinh_can_bang",
+        ]
+
+    def kiem_tra_gia_thuyet(self, nhom_gia_thuyet):
+        """Kiểm tra một giả thuyết kết luận bằng suy diễn lùi."""
+        k = self.known
+
+        hoc_lap_trinh = bool(k.get("hoc_lap_trinh"))
+        hoc_ml = bool(k.get("hoc_machine_learning"))
+        hoc_dl = bool(k.get("hoc_deep_learning"))
+        co_xu_ly_anh = bool(k.get("xu_ly_anh_video"))
+        co_game_do_hoa = bool(k.get("choi_game_do_hoa"))
+        co_may_nhe = bool(k.get("can_may_nhe_pin_lau"))
+        ngan_sach = k.get("ngan_sach")
+        co_nhu_cau_cao = hoc_dl or co_xu_ly_anh or co_game_do_hoa
+
+        def mo_ta_boolean(value, co_text, khong_text):
+            return f"Hiện tại: {co_text if value else khong_text}"
+
+        def mo_ta_ngan_sach():
+            labels = {
+                "thap": "Ngân sách thấp",
+                "trung_binh": "Ngân sách trung bình",
+                "cao": "Ngân sách cao",
+            }
+            return f"Hiện tại: {labels.get(ngan_sach, 'Chưa có thông tin ngân sách')}"
+
+        def mo_ta_nhu_cau_cao():
+            nhu_cau = []
+            if hoc_dl:
+                nhu_cau.append("Deep Learning")
+            if co_xu_ly_anh:
+                nhu_cau.append("Computer Vision")
+            if co_game_do_hoa:
+                nhu_cau.append("Game/Đồ họa")
+            if not nhu_cau:
+                return "Hiện tại: Không có nhu cầu cấu hình cao"
+            return "Hiện tại: Có nhu cầu " + ", ".join(nhu_cau)
+
+        def tao_dieu_kien(dieu_kien_can, du_lieu_hien_tai, dat):
+            return {
+                "dieu_kien_can": dieu_kien_can,
+                "du_lieu_hien_tai": du_lieu_hien_tai,
+                "dat": bool(dat),
+                "mo_ta": dieu_kien_can,
+            }
+
+        if nhom_gia_thuyet == "lap_trinh_co_ban":
+            dieu_kien = [
+                tao_dieu_kien("Người dùng có học lập trình", mo_ta_boolean(hoc_lap_trinh, "Có học lập trình", "Chưa học lập trình"), hoc_lap_trinh),
+                tao_dieu_kien("Người dùng chưa học Machine Learning", mo_ta_boolean(hoc_ml, "Có học Machine Learning", "Chưa học Machine Learning"), not hoc_ml),
+                tao_dieu_kien("Người dùng chưa học Deep Learning", mo_ta_boolean(hoc_dl, "Có học Deep Learning", "Chưa học Deep Learning"), not hoc_dl),
+                tao_dieu_kien("Người dùng không xử lý ảnh / Computer Vision", mo_ta_boolean(co_xu_ly_anh, "Có xử lý ảnh / Computer Vision", "Không xử lý ảnh / Computer Vision"), not co_xu_ly_anh),
+                tao_dieu_kien("Người dùng không chơi game / làm đồ họa", mo_ta_boolean(co_game_do_hoa, "Có chơi game / làm đồ họa", "Không chơi game / làm đồ họa"), not co_game_do_hoa),
+            ]
+        elif nhom_gia_thuyet == "machine_learning_co_ban":
+            dieu_kien = [
+                tao_dieu_kien("Người dùng có học Machine Learning", mo_ta_boolean(hoc_ml, "Có học Machine Learning", "Chưa học Machine Learning"), hoc_ml),
+                tao_dieu_kien("Người dùng chưa học Deep Learning", mo_ta_boolean(hoc_dl, "Có học Deep Learning", "Chưa học Deep Learning"), not hoc_dl),
+                tao_dieu_kien("Người dùng không xử lý ảnh / Computer Vision", mo_ta_boolean(co_xu_ly_anh, "Có xử lý ảnh / Computer Vision", "Không xử lý ảnh / Computer Vision"), not co_xu_ly_anh),
+                tao_dieu_kien("Người dùng không chơi game / làm đồ họa nặng", mo_ta_boolean(co_game_do_hoa, "Có chơi game / làm đồ họa", "Không chơi game / làm đồ họa"), not co_game_do_hoa),
+            ]
+        elif nhom_gia_thuyet == "ai_tiet_kiem_cloud":
+            dieu_kien = [
+                tao_dieu_kien("Ngân sách hiện tại là thấp", mo_ta_ngan_sach(), ngan_sach == "thap"),
+                tao_dieu_kien("Người dùng có ít nhất một nhu cầu cấu hình cao", mo_ta_nhu_cau_cao(), co_nhu_cau_cao),
+            ]
+        elif nhom_gia_thuyet == "deep_learning_co_ban":
+            dieu_kien = [
+                tao_dieu_kien("Người dùng có học Deep Learning", mo_ta_boolean(hoc_dl, "Có học Deep Learning", "Chưa học Deep Learning"), hoc_dl),
+                tao_dieu_kien("Ngân sách hiện tại là trung bình", mo_ta_ngan_sach(), ngan_sach == "trung_binh"),
+                tao_dieu_kien("Người dùng không xử lý ảnh / Computer Vision", mo_ta_boolean(co_xu_ly_anh, "Có xử lý ảnh / Computer Vision", "Không xử lý ảnh / Computer Vision"), not co_xu_ly_anh),
+                tao_dieu_kien("Người dùng không chơi game / làm đồ họa", mo_ta_boolean(co_game_do_hoa, "Có chơi game / làm đồ họa", "Không chơi game / làm đồ họa"), not co_game_do_hoa),
+            ]
+        elif nhom_gia_thuyet == "deep_learning_hieu_nang":
+            dieu_kien = [
+                tao_dieu_kien("Người dùng có học Deep Learning", mo_ta_boolean(hoc_dl, "Có học Deep Learning", "Chưa học Deep Learning"), hoc_dl),
+                tao_dieu_kien("Ngân sách hiện tại là cao", mo_ta_ngan_sach(), ngan_sach == "cao"),
+                tao_dieu_kien("Người dùng không ưu tiên máy nhẹ, pin lâu", mo_ta_boolean(co_may_nhe, "Ưu tiên máy nhẹ, pin lâu", "Không ưu tiên máy nhẹ, pin lâu"), not co_may_nhe),
+            ]
+        elif nhom_gia_thuyet == "computer_vision_hieu_nang":
+            dieu_kien = [
+                tao_dieu_kien("Người dùng có học Machine Learning hoặc Deep Learning", mo_ta_boolean(hoc_ml or hoc_dl, "Có học Machine Learning hoặc Deep Learning", "Chưa học Machine Learning hoặc Deep Learning"), hoc_ml or hoc_dl),
+                tao_dieu_kien("Người dùng có xử lý ảnh / Computer Vision", mo_ta_boolean(co_xu_ly_anh, "Có xử lý ảnh / Computer Vision", "Không xử lý ảnh / Computer Vision"), co_xu_ly_anh),
+                tao_dieu_kien("Ngân sách hiện tại là trung bình hoặc cao", mo_ta_ngan_sach(), ngan_sach in ["trung_binh", "cao"]),
+            ]
+        elif nhom_gia_thuyet == "ai_game_do_hoa":
+            dieu_kien = [
+                tao_dieu_kien("Người dùng có chơi game hoặc làm đồ họa", mo_ta_boolean(co_game_do_hoa, "Có chơi game / làm đồ họa", "Không chơi game / làm đồ họa"), co_game_do_hoa),
+                tao_dieu_kien("Ngân sách hiện tại là trung bình hoặc cao", mo_ta_ngan_sach(), ngan_sach in ["trung_binh", "cao"]),
+            ]
+        elif nhom_gia_thuyet == "may_mong_nhe_pin_lau":
+            dieu_kien = [
+                tao_dieu_kien("Người dùng cần máy nhẹ, pin lâu", mo_ta_boolean(co_may_nhe, "Cần máy nhẹ, pin lâu", "Không cần máy nhẹ, pin lâu"), co_may_nhe),
+                tao_dieu_kien("Người dùng không học Deep Learning", mo_ta_boolean(hoc_dl, "Có học Deep Learning", "Chưa học Deep Learning"), not hoc_dl),
+                tao_dieu_kien("Người dùng không xử lý ảnh / Computer Vision", mo_ta_boolean(co_xu_ly_anh, "Có xử lý ảnh / Computer Vision", "Không xử lý ảnh / Computer Vision"), not co_xu_ly_anh),
+                tao_dieu_kien("Người dùng không chơi game / làm đồ họa", mo_ta_boolean(co_game_do_hoa, "Có chơi game / làm đồ họa", "Không chơi game / làm đồ họa"), not co_game_do_hoa),
+            ]
+        elif nhom_gia_thuyet == "cau_hinh_can_bang":
+            nhu_cau_chinh = [
+                hoc_lap_trinh,
+                hoc_ml,
+                hoc_dl,
+                co_xu_ly_anh,
+                co_game_do_hoa,
+                co_may_nhe,
+            ]
+            so_nhu_cau = sum(bool(nhu_cau) for nhu_cau in nhu_cau_chinh)
+            co_xung_dot = (
+                (hoc_dl and co_may_nhe)
+                or (co_game_do_hoa and co_may_nhe)
+                or (co_xu_ly_anh and co_may_nhe)
+            )
+            mixed_need = so_nhu_cau >= 2
+            if co_xung_dot:
+                du_lieu_can_bang = "Hiện tại: Có xung đột giữa nhu cầu hiệu năng và tính di động"
+            elif mixed_need:
+                du_lieu_can_bang = f"Hiện tại: Có {so_nhu_cau} nhu cầu khác loại"
+            else:
+                du_lieu_can_bang = "Hiện tại: Chưa có nhu cầu pha trộn hoặc xung đột rõ"
+            dieu_kien = [
+                tao_dieu_kien(
+                    "Người dùng có xung đột nhu cầu hoặc có từ 2 nhu cầu khác loại trở lên",
+                    du_lieu_can_bang,
+                    co_xung_dot or mixed_need,
+                )
+            ]
+        else:
+            dieu_kien = [
+                tao_dieu_kien(
+                    "Giả thuyết nằm trong danh sách hệ thống có thể kiểm tra",
+                    "Hiện tại: Giả thuyết không có trong danh sách hỗ trợ",
+                    False,
+                )
+            ]
+
+        phu_hop = all(dieu_kien_item["dat"] for dieu_kien_item in dieu_kien)
+        if phu_hop:
+            ket_luan = "Giả thuyết phù hợp với dữ liệu hiện tại."
+        else:
+            ket_luan = "Giả thuyết chưa phù hợp vì một số điều kiện cần không khớp với dữ liệu hiện tại."
+
+        return {
+            "gia_thuyet": nhom_gia_thuyet,
+            "phu_hop": phu_hop,
+            "dieu_kien": dieu_kien,
+            "ket_luan": ket_luan,
+        }
+
     def tao_dau_vet_suy_luan(self):
         """Tạo danh sách giải thích các luật đã tác động đến điểm số."""
         k = self.known
@@ -561,6 +721,102 @@ class HeChuyenGiaTuVanMayTinhAI:
         print(f"Dung: {so_dung}")
         print(f"Sai: {so_sai}")
 
+    def kiem_thu_he_thong_data(self):
+        """Trả về dữ liệu kiểm thử để giao diện web hiển thị PASS/FAIL rõ ràng."""
+        test_cases = self.doc_sample_cases()
+        if test_cases is None:
+            return {
+                "total": 0,
+                "passed": 0,
+                "failed": 0,
+                "details": [],
+            }
+
+        known_cu = self.known.copy()
+        details = []
+        so_dung = 0
+        so_sai = 0
+
+        for test_case in test_cases:
+            self.known = test_case["input"].copy()
+            self.tinh_diem()
+            nhom_du_doan = self.suy_dien_nhom_chinh()
+            expected = test_case["expected_group"]
+            passed = nhom_du_doan == expected
+
+            if passed:
+                so_dung += 1
+            else:
+                so_sai += 1
+
+            details.append(
+                {
+                    "name": test_case["name"],
+                    "expected": expected,
+                    "got": nhom_du_doan,
+                    "passed": passed,
+                }
+            )
+
+        self.known = known_cu
+
+        return {
+            "total": len(test_cases),
+            "passed": so_dung,
+            "failed": so_sai,
+            "details": details,
+        }
+
+    def ten_nhom_hien_thi(self, nhom):
+        """Chuyển mã nhóm nội bộ thành tên dễ đọc trên terminal."""
+        mapping = {
+            "lap_trinh_co_ban": "Lap trinh co ban",
+            "machine_learning_co_ban": "Machine Learning co ban",
+            "ai_tiet_kiem_cloud": "AI tiet kiem + Cloud",
+            "deep_learning_co_ban": "Deep Learning co ban",
+            "deep_learning_hieu_nang": "Deep Learning hieu nang cao",
+            "computer_vision_hieu_nang": "Computer Vision hieu nang cao",
+            "ai_game_do_hoa": "AI + Game / Do hoa",
+            "may_mong_nhe_pin_lau": "May mong nhe, pin lau",
+            "cau_hinh_can_bang": "Cau hinh can bang",
+        }
+        return mapping.get(nhom, nhom)
+
+    def kiem_tra_suy_dien_lui_terminal(self):
+        """Chạy chức năng kiểm tra giả thuyết bằng suy diễn lùi trên terminal."""
+        print("\n===== KIEM TRA SUY DIEN LUI =====")
+        self.known.clear()
+        self.thu_thap_du_lieu()
+
+        danh_sach = self.danh_sach_gia_thuyet()
+        print("\nDanh sach gia thuyet co the kiem tra:")
+        for index, nhom in enumerate(danh_sach, start=1):
+            print(f"{index}. {self.ten_nhom_hien_thi(nhom)}")
+
+        while True:
+            lua_chon = input("Nhap lua chon gia thuyet: ").strip()
+            if lua_chon.isdigit() and 1 <= int(lua_chon) <= len(danh_sach):
+                nhom_gia_thuyet = danh_sach[int(lua_chon) - 1]
+                break
+            print(f"Lua chon khong hop le. Vui long nhap tu 1 den {len(danh_sach)}.")
+
+        ket_qua = self.kiem_tra_gia_thuyet(nhom_gia_thuyet)
+        trang_thai = "Phu hop" if ket_qua["phu_hop"] else "Chua phu hop"
+
+        print("\n===== KET QUA KIEM TRA GIA THUYET =====")
+        print(f"Gia thuyet: {self.ten_nhom_hien_thi(ket_qua['gia_thuyet'])}")
+        print(f"Ket luan: {trang_thai}")
+
+        print("\nCac dieu kien he thong kiem tra:")
+        for dieu_kien in ket_qua["dieu_kien"]:
+            nhan = "[DAT]" if dieu_kien.get("dat") else "[CHUA DAT]"
+            dieu_kien_can = dieu_kien.get("dieu_kien_can", dieu_kien.get("mo_ta", ""))
+            du_lieu_hien_tai = dieu_kien.get("du_lieu_hien_tai", "")
+            print(f"{nhan} Dieu kien can: {dieu_kien_can}")
+            print(f"      Du lieu hien tai: {du_lieu_hien_tai}")
+
+        print(f"\n{ket_qua['ket_luan']}")
+
     def menu(self):
         """Hiển thị menu terminal và điều hướng các chức năng chính."""
         while True:
@@ -570,6 +826,7 @@ class HeChuyenGiaTuVanMayTinhAI:
             print("3. Thoat")
             print("4. Xem lich su tu van")
             print("5. Kiem thu he thong")
+            print("6. Kiem tra suy dien lui")
 
             lua_chon = input("Nhap lua chon: ").strip()
             if lua_chon == "1":
@@ -584,5 +841,7 @@ class HeChuyenGiaTuVanMayTinhAI:
                 self.xem_lich_su()
             elif lua_chon == "5":
                 self.kiem_thu_he_thong()
+            elif lua_chon == "6":
+                self.kiem_tra_suy_dien_lui_terminal()
             else:
-                print("Vui long nhap 1, 2, 3, 4 hoac 5.")
+                print("Vui long nhap 1, 2, 3, 4, 5 hoac 6.")
