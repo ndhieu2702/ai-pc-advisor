@@ -1,0 +1,45 @@
+﻿KET QUA TU VAN CAU HINH MAY TINH
+=================================
+Nhom nhu cau: computer_vision
+Muc do phu hop: 100%
+
+Cau hinh khuyen nghi:
+- CPU: CPU hieu nang cao, uu tien dong H-series
+- RAM: 16GB den 32GB
+- SSD: 512GB den 1TB
+- GPU: Nen co GPU roi RTX de xu ly anh va mo hinh CNN
+- Man hinh: Full HD tro len, mau sac tot
+
+Canh bao ngan sach:
+Dieu chinh ngan sach: Voi ngan sach cao, co the uu tien CPU H-series, RAM 32GB, SSD 1TB va GPU RTX.
+
+Goi y nang cap:
+- Nen chon may co kha nang nang cap RAM hoac SSD de su dung lau dai.
+
+Giai thich ket qua:
+Ban co xu ly anh/video hoac Computer Vision, nen can GPU roi, RAM lon va man hinh co chat luong hien thi tot.
+
+Dau vet suy luan:
+- Người dùng học lập trình -> tăng điểm cho nhóm lập trình cơ bản, Machine Learning cơ bản, Deep Learning và cấu hình cân bằng.
+- Người dùng học Machine Learning -> tăng điểm cho nhóm Machine Learning cơ bản, Deep Learning, Computer Vision và AI kết hợp đồ họa.
+- Người dùng học Deep Learning -> tăng điểm mạnh cho nhóm Deep Learning, Computer Vision và AI kết hợp đồ họa.
+- Người dùng xử lý ảnh/video -> tăng điểm mạnh cho nhóm Computer Vision.
+- Người dùng chơi game hoặc làm đồ họa -> tăng điểm mạnh cho nhóm AI kết hợp game/đồ họa.
+- Người dùng cần máy nhẹ, pin lâu -> tăng điểm cho nhóm máy mỏng nhẹ và cấu hình cân bằng.
+- Người dùng cần nâng cấp RAM/SSD -> tăng điểm cho nhóm cấu hình cân bằng.
+- Ngân sách cao -> tăng điểm cho nhóm Deep Learning, Computer Vision và AI kết hợp đồ họa.
+
+Du lieu nguoi dung da cung cap:
+- hoc_lap_trinh: True
+- hoc_machine_learning: True
+- hoc_deep_learning: True
+- xu_ly_anh_video: True
+- choi_game_do_hoa: True
+- can_may_nhe_pin_lau: True
+- can_nang_cap: True
+- ngan_sach: cao
+
+Top 3 nhom nhu cau phu hop:
+- computer_vision: 100%
+- deep_learning: 100%
+- ai_game_do_hoa: 100%

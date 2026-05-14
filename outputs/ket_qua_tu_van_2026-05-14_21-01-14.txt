@@ -1,0 +1,41 @@
+﻿KET QUA TU VAN CAU HINH MAY TINH
+=================================
+Nhom nhu cau: may_mong_nhe_pin_lau
+Muc do phu hop: 90%
+
+Cau hinh khuyen nghi:
+- CPU: Core i5 U-series hoac Ryzen 5 U-series tiet kiem dien
+- RAM: 16GB
+- SSD: 512GB
+- GPU: Khong bat buoc GPU roi, uu tien pin va trong luong
+- Man hinh: 14 inch, Full HD, trong luong nhe
+
+Canh bao ngan sach:
+Dieu chinh ngan sach: Voi ngan sach cao, co the uu tien CPU H-series, RAM 32GB, SSD 1TB va GPU RTX.
+
+Goi y nang cap:
+- Nen chon may co kha nang nang cap RAM hoac SSD de su dung lau dai.
+
+Giai thich ket qua:
+Ban uu tien di chuyen, may nhe va pin lau, nen he thong uu tien CPU tiet kiem dien va thiet ke mong nhe.
+
+Dau vet suy luan:
+- Người dùng học lập trình -> tăng điểm cho nhóm lập trình cơ bản, Machine Learning cơ bản, Deep Learning và cấu hình cân bằng.
+- Người dùng cần máy nhẹ, pin lâu -> tăng điểm cho nhóm máy mỏng nhẹ và cấu hình cân bằng.
+- Người dùng cần nâng cấp RAM/SSD -> tăng điểm cho nhóm cấu hình cân bằng.
+- Ngân sách cao -> tăng điểm cho nhóm Deep Learning, Computer Vision và AI kết hợp đồ họa.
+
+Du lieu nguoi dung da cung cap:
+- hoc_lap_trinh: True
+- hoc_machine_learning: False
+- hoc_deep_learning: False
+- xu_ly_anh_video: False
+- choi_game_do_hoa: False
+- can_may_nhe_pin_lau: True
+- can_nang_cap: True
+- ngan_sach: cao
+
+Top 3 nhom nhu cau phu hop:
+- may_mong_nhe_pin_lau: 90%
+- lap_trinh_co_ban: 85%
+- cau_hinh_can_bang: 50%

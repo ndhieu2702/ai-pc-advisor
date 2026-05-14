@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Lap trinh co ban",
+    "expected_group": "lap_trinh_co_ban",
+    "input": {
+      "hoc_lap_trinh": true,
+      "hoc_machine_learning": false,
+      "hoc_deep_learning": false,
+      "xu_ly_anh_video": false,
+      "choi_game_do_hoa": false,
+      "can_may_nhe_pin_lau": false,
+      "can_nang_cap": true,
+      "ngan_sach": "thap"
+    }
+  },
+  {
+    "name": "Machine Learning co ban",
+    "expected_group": "machine_learning_co_ban",
+    "input": {
+      "hoc_lap_trinh": true,
+      "hoc_machine_learning": true,
+      "hoc_deep_learning": false,
+      "xu_ly_anh_video": false,
+      "choi_game_do_hoa": false,
+      "can_may_nhe_pin_lau": false,
+      "can_nang_cap": true,
+      "ngan_sach": "trung_binh"
+    }
+  },
+  {
+    "name": "Deep Learning",
+    "expected_group": "deep_learning",
+    "input": {
+      "hoc_lap_trinh": true,
+      "hoc_machine_learning": true,
+      "hoc_deep_learning": true,
+      "xu_ly_anh_video": false,
+      "choi_game_do_hoa": false,
+      "can_may_nhe_pin_lau": false,
+      "can_nang_cap": true,
+      "ngan_sach": "cao"
+    }
+  },
+  {
+    "name": "Computer Vision",
+    "expected_group": "computer_vision",
+    "input": {
+      "hoc_lap_trinh": true,
+      "hoc_machine_learning": true,
+      "hoc_deep_learning": true,
+      "xu_ly_anh_video": true,
+      "choi_game_do_hoa": false,
+      "can_may_nhe_pin_lau": false,
+      "can_nang_cap": true,
+      "ngan_sach": "cao"
+    }
+  },
+  {
+    "name": "May mong nhe pin lau",
+    "expected_group": "may_mong_nhe_pin_lau",
+    "input": {
+      "hoc_lap_trinh": true,
+      "hoc_machine_learning": false,
+      "hoc_deep_learning": false,
+      "xu_ly_anh_video": false,
+      "choi_game_do_hoa": false,
+      "can_may_nhe_pin_lau": true,
+      "can_nang_cap": false,
+      "ngan_sach": "trung_binh"
+    }
+  }
+]
