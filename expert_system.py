@@ -23,6 +23,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 class HeChuyenGiaTuVanMayTinhAI:
     def __init__(self):
+        """Khởi tạo bộ nhớ làm việc và nạp cơ sở tri thức cấu hình."""
         self.known = {}
         self.cpu = CPU_KB
         self.ram = RAM_KB
@@ -31,6 +32,7 @@ class HeChuyenGiaTuVanMayTinhAI:
         self.man_hinh = MAN_HINH_KB
 
     def hoi_yes_no(self, thuoc_tinh, cau_hoi):
+        """Hỏi câu hỏi có/không và lưu câu trả lời vào self.known."""
         while True:
             tra_loi = input(f"{cau_hoi} (yes/no hoac co/khong): ").strip().lower()
             if tra_loi in ["yes", "y", "co", "có"]:
@@ -42,6 +44,7 @@ class HeChuyenGiaTuVanMayTinhAI:
             print("Gia tri khong hop le. Vui long nhap yes/no hoac co/khong.")
 
     def hoi_ngan_sach(self):
+        """Hỏi mức ngân sách của người dùng và lưu vào self.known."""
         while True:
             print("\nNgan sach cua ban thuoc muc nao?")
             print("1. thap")
@@ -61,6 +64,7 @@ class HeChuyenGiaTuVanMayTinhAI:
             print("Gia tri khong hop le. Vui long nhap thap, trung_binh, cao hoac 1/2/3.")
 
     def thu_thap_du_lieu(self):
+        """Thu thập toàn bộ thông tin đầu vào cần cho quá trình tư vấn."""
         self.hoi_yes_no("hoc_lap_trinh", "Ban co hoc lap trinh khong?")
         self.hoi_yes_no("hoc_machine_learning", "Ban co hoc Machine Learning khong?")
         self.hoi_yes_no("hoc_deep_learning", "Ban co hoc Deep Learning khong?")
@@ -71,6 +75,7 @@ class HeChuyenGiaTuVanMayTinhAI:
         self.hoi_ngan_sach()
 
     def xac_dinh_nhom_nhu_cau(self):
+        """Xác định nhóm nhu cầu theo tập luật điều kiện cũ."""
         k = self.known
         hoc_lap_trinh = k.get("hoc_lap_trinh", False)
         hoc_ml = k.get("hoc_machine_learning", False)
@@ -96,7 +101,33 @@ class HeChuyenGiaTuVanMayTinhAI:
             return "cau_hinh_can_bang"
         return "cau_hinh_can_bang"
 
+    def suy_dien_nhom_chinh(self):
+        """Chọn nhóm kết luận chính theo luật ưu tiên của hệ chuyên gia."""
+        k = self.known
+        hoc_lap_trinh = k.get("hoc_lap_trinh", False)
+        hoc_ml = k.get("hoc_machine_learning", False)
+        hoc_dl = k.get("hoc_deep_learning", False)
+        xu_ly_anh = k.get("xu_ly_anh_video", False)
+        game_do_hoa = k.get("choi_game_do_hoa", False)
+        may_nhe = k.get("can_may_nhe_pin_lau", False)
+        ngan_sach = k.get("ngan_sach")
+
+        if ngan_sach == "thap" and (hoc_dl or xu_ly_anh or game_do_hoa):
+            return "ai_tiet_kiem_cloud"
+        if hoc_dl and xu_ly_anh and ngan_sach in ["trung_binh", "cao"]:
+            return "computer_vision"
+        if hoc_dl and ngan_sach in ["trung_binh", "cao"]:
+            return "deep_learning"
+        if hoc_ml and not hoc_dl:
+            return "machine_learning_co_ban"
+        if may_nhe and not hoc_dl and not game_do_hoa:
+            return "may_mong_nhe_pin_lau"
+        if hoc_lap_trinh and not hoc_ml and not hoc_dl:
+            return "lap_trinh_co_ban"
+        return "cau_hinh_can_bang"
+
     def tinh_diem(self):
+        """Tính điểm phù hợp cho từng nhóm nhu cầu dựa trên dữ liệu đã biết."""
         k = self.known
         scores = {
             "lap_trinh_co_ban": 0,
@@ -105,6 +136,7 @@ class HeChuyenGiaTuVanMayTinhAI:
             "computer_vision": 0,
             "ai_game_do_hoa": 0,
             "may_mong_nhe_pin_lau": 0,
+            "ai_tiet_kiem_cloud": 0,
             "cau_hinh_can_bang": 0,
         }
 
@@ -137,7 +169,7 @@ class HeChuyenGiaTuVanMayTinhAI:
         if k.get("xu_ly_anh_video"):
             scores["computer_vision"] += 50
         if k.get("choi_game_do_hoa"):
-            scores["ai_game_do_hoa"] += 45
+            scores["ai_game_do_hoa"] += 70
         else:
             scores["may_mong_nhe_pin_lau"] += 20
         if k.get("can_may_nhe_pin_lau"):
@@ -149,6 +181,18 @@ class HeChuyenGiaTuVanMayTinhAI:
         ngan_sach = k.get("ngan_sach")
         if ngan_sach == "thap":
             scores["lap_trinh_co_ban"] += 15
+            if k.get("hoc_deep_learning") or k.get("xu_ly_anh_video") or k.get("choi_game_do_hoa"):
+                scores["ai_tiet_kiem_cloud"] += 100
+                nhom_bi_phat = {
+                    "deep_learning": 50,
+                    "computer_vision": 50,
+                    "deep_learning_hieu_nang": 50,
+                    "computer_vision_hieu_nang": 50,
+                    "ai_game_do_hoa": 40,
+                }
+                for ten_nhom, diem_tru in nhom_bi_phat.items():
+                    if ten_nhom in scores:
+                        scores[ten_nhom] = max(0, scores[ten_nhom] - diem_tru)
         elif ngan_sach == "trung_binh":
             scores["machine_learning_co_ban"] += 15
             scores["may_mong_nhe_pin_lau"] += 10
@@ -160,7 +204,62 @@ class HeChuyenGiaTuVanMayTinhAI:
 
         return scores
 
+    def phat_hien_xung_dot(self):
+        """Phát hiện các xung đột lớn giữa nhu cầu và điều kiện sử dụng."""
+        k = self.known
+        xung_dot = []
+        ngan_sach = k.get("ngan_sach")
+        can_cau_hinh_cao = (
+            k.get("hoc_deep_learning")
+            or k.get("xu_ly_anh_video")
+            or k.get("choi_game_do_hoa")
+        )
+
+        if ngan_sach == "thap" and can_cau_hinh_cao:
+            xung_dot.append("Ngân sách thấp nhưng nhu cầu cần cấu hình cao")
+        if k.get("can_may_nhe_pin_lau") and can_cau_hinh_cao:
+            xung_dot.append("Nhu cầu máy nhẹ pin lâu xung đột với tác vụ hiệu năng cao")
+        if k.get("choi_game_do_hoa") and ngan_sach == "thap":
+            xung_dot.append("Game/đồ họa cần GPU nhưng ngân sách thấp")
+
+        return xung_dot
+
+    def tinh_muc_do_chac_chan(self, scores, nhom):
+        """Tính độ tin cậy của kết luận dựa trên điểm, khoảng cách và xung đột."""
+        sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        top_score = scores.get(nhom, 0)
+        second_score = 0
+
+        for group, score in sorted_scores:
+            if group != nhom:
+                second_score = score
+                break
+
+        gap = top_score - second_score
+        certainty = min(top_score, 90)
+
+        if gap >= 25:
+            certainty += 10
+        elif gap >= 15:
+            certainty += 5
+        elif gap < 10:
+            certainty -= 15
+
+        conflicts = self.phat_hien_xung_dot()
+
+        if conflicts:
+            certainty = min(certainty, 85)
+
+        if gap < 10:
+            certainty = min(certainty, 75)
+
+        if not conflicts and gap >= 25 and top_score >= 90:
+            certainty = 100
+
+        return max(0, min(100, round(certainty)))
+
     def tao_dau_vet_suy_luan(self):
+        """Tạo danh sách giải thích các luật đã tác động đến điểm số."""
         k = self.known
         dau_vet = []
 
@@ -182,6 +281,8 @@ class HeChuyenGiaTuVanMayTinhAI:
         ngan_sach = k.get("ngan_sach")
         if ngan_sach == "thap":
             dau_vet.append("- Ngân sách thấp -> ưu tiên nhóm lập trình cơ bản và cấu hình tiết kiệm.")
+            if k.get("hoc_deep_learning") or k.get("xu_ly_anh_video") or k.get("choi_game_do_hoa"):
+                dau_vet.append("- Ngân sách thấp nhưng có nhu cầu cấu hình cao -> chuyển hướng sang nhóm AI tiết kiệm + Cloud.")
         elif ngan_sach == "trung_binh":
             dau_vet.append("- Ngân sách trung bình -> tăng điểm cho nhóm Machine Learning cơ bản, máy mỏng nhẹ và cấu hình cân bằng.")
         elif ngan_sach == "cao":
@@ -190,21 +291,26 @@ class HeChuyenGiaTuVanMayTinhAI:
         return dau_vet
 
     def giai_thich(self, nhom):
+        """Trả về giải thích ngắn gọn cho nhóm kết luận."""
         return GIAI_THICH_KB[nhom]
 
     def canh_bao_ngan_sach(self, nhom):
+        """Tạo cảnh báo hoặc gợi ý điều chỉnh theo mức ngân sách."""
         ngan_sach = self.known.get("ngan_sach")
+        if nhom == "ai_tiet_kiem_cloud":
+            return "Ngân sách hiện tại chưa đủ để mua cấu hình AI hiệu năng cao có GPU RTX. Hệ thống đề xuất hướng học tập tiết kiệm hơn: ưu tiên RAM/SSD và sử dụng Google Colab, Kaggle Notebook hoặc máy phòng lab cho các mô hình nặng."
         if ngan_sach == "thap" and nhom in ["deep_learning", "computer_vision", "ai_game_do_hoa"]:
-            return "Canh bao ngan sach: Nhu cau cua ban can cau hinh kha manh, nhung ngan sach dang o muc thap. Nen uu tien RAM/SSD truoc, co the dung Google Colab hoac may phong lab de chay mo hinh nang."
+            return "Cảnh báo ngân sách: Nhu cầu của bạn cần cấu hình khá mạnh, nhưng ngân sách đang ở mức thấp. Nên ưu tiên RAM/SSD trước, có thể dùng Google Colab hoặc máy phòng lab để chạy mô hình nặng."
         if ngan_sach == "thap":
-            return "Dieu chinh ngan sach: Voi ngan sach thap, nen uu tien SSD va RAM truoc, khong bat buoc GPU roi."
+            return "Điều chỉnh ngân sách: Với ngân sách thấp, nên ưu tiên SSD và RAM trước, không bắt buộc GPU rời."
         if ngan_sach == "trung_binh":
-            return "Dieu chinh ngan sach: Voi ngan sach trung binh, nen chon RAM 16GB, SSD 512GB va CPU Core i5/Ryzen 5 tro len."
+            return "Điều chỉnh ngân sách: Với ngân sách trung bình, nên chọn RAM 16GB, SSD 512GB và CPU Core i5/Ryzen 5 trở lên."
         if ngan_sach == "cao":
-            return "Dieu chinh ngan sach: Voi ngan sach cao, co the uu tien CPU H-series, RAM 32GB, SSD 1TB va GPU RTX."
+            return "Điều chỉnh ngân sách: Với ngân sách cao, có thể ưu tiên CPU H-series, RAM 32GB, SSD 1TB và GPU RTX."
         return ""
 
     def luu_lich_su(self, nhom, diem):
+        """Lưu kết quả tư vấn hiện tại vào file history.csv."""
         ten_file = "history.csv"
         fieldnames = [
             "time",
@@ -253,17 +359,19 @@ class HeChuyenGiaTuVanMayTinhAI:
             writer.writerow(dong_du_lieu)
 
     def xuat_ket_qua_txt(self, nhom, diem, top_3):
+        """Xuất kết quả tư vấn chi tiết ra file txt trong thư mục outputs."""
         thoi_gian = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         ten_file = f"ket_qua_tu_van_{thoi_gian}.txt"
         thu_muc_outputs = "outputs"
         os.makedirs(thu_muc_outputs, exist_ok=True)
         duong_dan_file = os.path.join(thu_muc_outputs, ten_file)
+        xung_dot = self.phat_hien_xung_dot()
 
         with open(duong_dan_file, "w", encoding="utf-8-sig") as file:
             file.write("KET QUA TU VAN CAU HINH MAY TINH\n")
             file.write("=================================\n")
             file.write(f"Nhom nhu cau: {nhom}\n")
-            file.write(f"Muc do phu hop: {diem}%\n")
+            file.write(f"Mức độ chắc chắn theo luật: {diem}%\n")
 
             file.write("\nCau hinh khuyen nghi:\n")
             file.write(f"- CPU: {self.cpu[nhom]}\n")
@@ -274,6 +382,13 @@ class HeChuyenGiaTuVanMayTinhAI:
 
             file.write("\nCanh bao ngan sach:\n")
             file.write(f"{self.canh_bao_ngan_sach(nhom)}\n")
+
+            file.write("\nCác xung đột nếu có:\n")
+            if xung_dot:
+                for dong in xung_dot:
+                    file.write(f"- {dong}\n")
+            else:
+                file.write("- Không có xung đột lớn.\n")
 
             if self.known.get("can_nang_cap"):
                 file.write("\nGoi y nang cap:\n")
@@ -292,22 +407,24 @@ class HeChuyenGiaTuVanMayTinhAI:
 
             file.write("\nTop 3 nhom nhu cau phu hop:\n")
             for ten_nhom, score in top_3:
-                file.write(f"- {ten_nhom}: {min(score, 100)}%\n")
+                file.write(f"- {ten_nhom}: {max(0, min(score, 100))}%\n")
 
         return duong_dan_file.replace("\\", "/")
 
     def in_ket_qua(self):
+        """In kết quả tư vấn, lưu lịch sử và xuất file báo cáo."""
         scores = self.tinh_diem()
 
-        # Bộ suy diễn chọn nhóm có điểm phù hợp cao nhất
+        # Bộ suy diễn chọn nhóm theo luật ưu tiên và điểm phù hợp
         top_3 = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:3]
 
-        nhom = top_3[0][0]
-        diem = min(top_3[0][1], 100)
+        nhom = self.suy_dien_nhom_chinh()
+        diem = self.tinh_muc_do_chac_chan(scores, nhom)
+        xung_dot = self.phat_hien_xung_dot()
 
         print("\n================= KET QUA TU VAN =================")
         print(f"Nhom nhu cau cua ban: {nhom}")
-        print(f"Muc do phu hop: {diem}%")
+        print(f"Muc do chac chan theo luat: {diem}%")
         print("\nCau hinh khuyen nghi:")
         print(f"- CPU: {self.cpu[nhom]}")
         print(f"- RAM: {self.ram[nhom]}")
@@ -316,6 +433,11 @@ class HeChuyenGiaTuVanMayTinhAI:
         print(f"- Man hinh: {self.man_hinh[nhom]}")
 
         print("\n" + self.canh_bao_ngan_sach(nhom))
+
+        if xung_dot:
+            print("\nCanh bao xung dot:")
+            for dong in xung_dot:
+                print(f"- {dong}")
 
         if self.known.get("can_nang_cap"):
             print("- Goi y nang cap: Nen chon may co kha nang nang cap RAM hoac SSD de su dung lau dai.")
@@ -333,7 +455,7 @@ class HeChuyenGiaTuVanMayTinhAI:
 
         print("\nTop 3 nhom nhu cau phu hop:")
         for ten_nhom, score in top_3:
-            print(f"- {ten_nhom}: {min(score, 100)}%")
+            print(f"- {ten_nhom}: {max(0, min(score, 100))}%")
 
         print("===================================================")
         self.luu_lich_su(nhom, diem)
@@ -343,6 +465,7 @@ class HeChuyenGiaTuVanMayTinhAI:
         print("Ket thuc tu van.")
 
     def bat_dau(self):
+        """Chạy luồng tư vấn thủ công trên terminal."""
         print("====================================================")
         print(" HE CHUYEN GIA TU VAN CAU HINH MAY TINH CHO SINH VIEN AI")
         print("====================================================")
@@ -354,6 +477,7 @@ class HeChuyenGiaTuVanMayTinhAI:
         self.in_ket_qua()
 
     def doc_sample_cases(self):
+        """Đọc danh sách demo và test case từ file JSON."""
         duong_dan = os.path.join(os.path.dirname(__file__), "data", "sample_cases.json")
         if not os.path.exists(duong_dan):
             print("Khong tim thay file data/sample_cases.json")
@@ -363,6 +487,7 @@ class HeChuyenGiaTuVanMayTinhAI:
             return json.load(file)
 
     def chay_demo_mau(self):
+        """Cho người dùng chọn một demo mẫu và tự động tư vấn."""
         demos = self.doc_sample_cases()
         if demos is None:
             return
@@ -383,6 +508,7 @@ class HeChuyenGiaTuVanMayTinhAI:
             print(f"Lua chon khong hop le. Vui long nhap tu 1 den {len(demos)}.")
 
     def xem_lich_su(self):
+        """Đọc và hiển thị 5 lần tư vấn gần nhất từ history.csv."""
         ten_file = "history.csv"
         if not os.path.exists(ten_file) or os.path.getsize(ten_file) == 0:
             print("Chua co lich su tu van.")
@@ -401,11 +527,12 @@ class HeChuyenGiaTuVanMayTinhAI:
             print(
                 f"- {dong.get('time', '')} | "
                 f"nhom: {dong.get('nhom_ket_luan', '')} | "
-                f"phu hop: {dong.get('muc_do_phu_hop', '')}% | "
+                f"do tin cay: {dong.get('muc_do_phu_hop', '')}% | "
                 f"ngan sach: {dong.get('ngan_sach', '')}"
             )
 
     def kiem_thu_he_thong(self):
+        """Chạy các test case mẫu để kiểm tra nhóm kết luận."""
         test_cases = self.doc_sample_cases()
         if test_cases is None:
             return
@@ -417,8 +544,8 @@ class HeChuyenGiaTuVanMayTinhAI:
         print("\n===== KIEM THU HE THONG =====")
         for test_case in test_cases:
             self.known = test_case["input"].copy()
-            scores = self.tinh_diem()
-            nhom_du_doan = max(scores, key=scores.get)
+            self.tinh_diem()
+            nhom_du_doan = self.suy_dien_nhom_chinh()
             expected = test_case["expected_group"]
 
             if nhom_du_doan == expected:
@@ -435,6 +562,7 @@ class HeChuyenGiaTuVanMayTinhAI:
         print(f"Sai: {so_sai}")
 
     def menu(self):
+        """Hiển thị menu terminal và điều hướng các chức năng chính."""
         while True:
             print("\n===== MENU HE CHUYEN GIA =====")
             print("1. Tu van thu cong")

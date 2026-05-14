@@ -1,3 +1,4 @@
+import json
 import os
 
 import pandas as pd
@@ -21,6 +22,7 @@ GROUP_LABELS = {
     "computer_vision": "Computer Vision",
     "ai_game_do_hoa": "AI + Game / Đồ họa",
     "may_mong_nhe_pin_lau": "Máy mỏng nhẹ, pin lâu",
+    "ai_tiet_kiem_cloud": "AI tiết kiệm + Cloud",
     "cau_hinh_can_bang": "Cấu hình cân bằng",
 }
 
@@ -39,6 +41,7 @@ def pretty_group(name):
         "computer_vision": "Computer Vision",
         "ai_game_do_hoa": "AI + Game / Đồ họa",
         "may_mong_nhe_pin_lau": "Máy mỏng nhẹ, pin lâu",
+        "ai_tiet_kiem_cloud": "AI tiết kiệm + Cloud",
         "cau_hinh_can_bang": "Cấu hình cân bằng",
     }
     return mapping.get(name, name)
@@ -95,6 +98,7 @@ def format_explanation_text(nhom, text):
         "computer_vision": "Bạn có xử lý ảnh/video hoặc Computer Vision, nên cần GPU rời, RAM lớn và màn hình có chất lượng hiển thị tốt.",
         "ai_game_do_hoa": "Bạn vừa học AI vừa có nhu cầu game/đồ họa, nên cần GPU rời và tản nhiệt tốt để đảm bảo hiệu năng.",
         "may_mong_nhe_pin_lau": "Bạn ưu tiên di chuyển, máy nhẹ và pin lâu, nên hệ thống ưu tiên CPU tiết kiệm điện và thiết kế mỏng nhẹ.",
+        "ai_tiet_kiem_cloud": "Người dùng có nhu cầu học AI/Deep Learning/Computer Vision nhưng ngân sách thấp chưa phù hợp để mua laptop GPU mạnh. Hệ thống đề xuất cấu hình vừa đủ để học lập trình, xử lý dữ liệu và chạy mô hình nhỏ; với mô hình nặng nên dùng Google Colab, Kaggle Notebook hoặc máy phòng lab.",
         "cau_hinh_can_bang": "Nhu cầu của bạn ở mức tổng hợp, nên hệ thống đề xuất cấu hình cân bằng giữa hiệu năng, chi phí và tính di động.",
     }
     return explanations.get(nhom, format_config_text(text))
@@ -122,6 +126,8 @@ def pretty_reasoning_traces(he):
     ngan_sach = k.get("ngan_sach")
     if ngan_sach == "thap":
         traces.append("Ngân sách thấp -> ưu tiên nhóm lập trình cơ bản và cấu hình tiết kiệm.")
+        if k.get("hoc_deep_learning") or k.get("xu_ly_anh_video") or k.get("choi_game_do_hoa"):
+            traces.append("Ngân sách thấp nhưng có nhu cầu cấu hình cao -> chuyển hướng sang nhóm AI tiết kiệm + Cloud.")
     elif ngan_sach == "trung_binh":
         traces.append("Ngân sách trung bình -> tăng điểm cho nhóm Machine Learning cơ bản, máy mỏng nhẹ và cấu hình cân bằng.")
     elif ngan_sach == "cao":
@@ -129,16 +135,35 @@ def pretty_reasoning_traces(he):
 
     return traces
 
-DEMO_DEEP_LEARNING = {
-    "hoc_lap_trinh": True,
-    "hoc_machine_learning": True,
-    "hoc_deep_learning": True,
-    "xu_ly_anh_video": False,
-    "choi_game_do_hoa": False,
-    "can_may_nhe_pin_lau": False,
-    "can_nang_cap": True,
-    "ngan_sach": "cao",
-}
+
+def pretty_demo_name(name):
+    mapping = {
+        "Lap trinh co ban": "Lập trình cơ bản",
+        "Machine Learning co ban": "Machine Learning cơ bản",
+        "Deep Learning": "Deep Learning",
+        "Computer Vision": "Computer Vision",
+        "May mong nhe pin lau": "Máy mỏng nhẹ, pin lâu",
+        "AI tiet kiem + Cloud": "AI tiết kiệm + Cloud",
+        "AI tiết kiệm + Cloud": "AI tiết kiệm + Cloud",
+    }
+    return mapping.get(name, name)
+
+
+def load_sample_cases():
+    path = os.path.join(os.path.dirname(__file__), "data", "sample_cases.json")
+    if not os.path.exists(path):
+        return [], "Không tìm thấy file data/sample_cases.json"
+
+    try:
+        with open(path, "r", encoding="utf-8") as file:
+            cases = json.load(file)
+    except Exception:
+        return [], "Không đọc được dữ liệu demo mẫu"
+
+    if not isinstance(cases, list):
+        return [], "Không đọc được dữ liệu demo mẫu"
+
+    return cases, ""
 
 
 def inject_css():
@@ -504,6 +529,15 @@ def inject_css():
             font-weight: 650;
         }
 
+        .warning-list {
+            margin: 0.45rem 0 0 1.15rem;
+            padding: 0;
+        }
+
+        .warning-list li {
+            margin: 0.2rem 0;
+        }
+
         .small-alert {
             background: #ecfdf5;
             color: #047857;
@@ -548,8 +582,9 @@ def infer_result(known, save_outputs=False):
     he = create_expert(known)
     scores = he.tinh_diem()
     top_3 = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:3]
-    nhom = top_3[0][0]
-    diem = min(top_3[0][1], 100)
+    nhom = he.suy_dien_nhom_chinh()
+    diem = he.tinh_muc_do_chac_chan(scores, nhom)
+    conflicts = he.phat_hien_xung_dot()
     txt_path = None
 
     if save_outputs:
@@ -562,6 +597,7 @@ def infer_result(known, save_outputs=False):
         "top_3": top_3,
         "nhom": nhom,
         "diem": diem,
+        "conflicts": conflicts,
         "txt_path": txt_path,
     }
 
@@ -612,7 +648,7 @@ def render_history_table(limit=5):
     header_cols = st.columns([1.4, 1.4, 1])
     header_cols[0].markdown("**Thời gian**")
     header_cols[1].markdown("**Nhóm phù hợp nhất**")
-    header_cols[2].markdown("**Mức độ phù hợp**")
+    header_cols[2].markdown("**Độ tin cậy tư vấn**")
 
     st.divider()
 
@@ -634,8 +670,8 @@ def run_system_tests():
     failed = 0
     for case in cases:
         he.known = case["input"].copy()
-        scores = he.tinh_diem()
-        predicted = max(scores, key=scores.get)
+        he.tinh_diem()
+        predicted = he.suy_dien_nhom_chinh()
         expected = case["expected_group"]
         if predicted == expected:
             passed += 1
@@ -667,7 +703,23 @@ def render_header():
 def render_result_card(result):
     nhom = result["nhom"]
     diem = result["diem"]
+    he = result["he"]
+    conflicts = result.get("conflicts", [])
     group_name = pretty_group(nhom)
+    warning_blocks = []
+    if nhom == "ai_tiet_kiem_cloud":
+        warning_blocks.append(
+            f'<div class="notice">{html_escape(he.canh_bao_ngan_sach(nhom))}</div>'
+        )
+    if conflicts:
+        conflict_items = "".join(
+            f"<li>{html_escape(conflict)}</li>"
+            for conflict in conflicts
+        )
+        warning_blocks.append(
+            f'<div class="notice"><b>Cảnh báo:</b><ul class="warning-list">{conflict_items}</ul></div>'
+        )
+    warning_html = "".join(warning_blocks)
     st.markdown(
         f"""
         <div class="result-card">
@@ -677,10 +729,11 @@ def render_result_card(result):
                 <span class="result-group">{html_escape(group_name)}</span>
             </div>
             <div class="result-progress-row">
-                <div>Mức độ phù hợp:</div>
+                <div>Độ tin cậy tư vấn:</div>
                 <div class="progress-bg"><div class="progress-fill" style="width:{diem}%;"></div></div>
                 <div class="score-badge">{diem}%</div>
             </div>
+            {warning_html}
         </div>
         """,
         unsafe_allow_html=True,
@@ -722,7 +775,7 @@ def render_top3_and_explanation(result):
 
     rows = []
     for index, (group_id, score) in enumerate(top_3, start=1):
-        percent = min(score, 100)
+        percent = max(0, min(score, 100))
         rows.append(
             f"""
             <div class="rank-row">
@@ -840,42 +893,29 @@ def build_known_from_inputs():
 def initialize_state():
     if "page" not in st.session_state:
         st.session_state.page = "dashboard"
-    if "result" not in st.session_state:
-        st.session_state.result = infer_result(DEMO_DEEP_LEARNING, save_outputs=False)
     if "export_message" not in st.session_state:
         st.session_state.export_message = ""
     if "export_path" not in st.session_state:
         st.session_state.export_path = ""
     defaults = {
         "hoc_lap_trinh": True,
-        "hoc_ml": True,
-        "hoc_dl": True,
+        "hoc_ml": False,
+        "hoc_dl": False,
         "xu_ly_anh": False,
         "game_do_hoa": False,
         "may_nhe": False,
         "can_nang_cap": True,
-        "ngan_sach_label": "Cao",
+        "ngan_sach_label": "Thấp",
     }
     for key, value in defaults.items():
         st.session_state.setdefault(key, value)
+    if "result" not in st.session_state:
+        cases, _ = load_sample_cases()
+        known = cases[0]["input"].copy() if cases else build_known_from_inputs()
+        st.session_state.result = infer_result(known, save_outputs=False)
 
 
 def render_sidebar():
-    def run_demo_callback():
-        st.session_state.hoc_lap_trinh = True
-        st.session_state.hoc_ml = True
-        st.session_state.hoc_dl = True
-        st.session_state.xu_ly_anh = False
-        st.session_state.game_do_hoa = False
-        st.session_state.may_nhe = False
-        st.session_state.can_nang_cap = True
-        st.session_state.ngan_sach_label = "Cao"
-        st.session_state.result = infer_result(DEMO_DEEP_LEARNING, save_outputs=True)
-        st.session_state.page = "dashboard"
-        st.session_state.export_message = "Đã xuất kết quả tư vấn"
-        st.session_state.export_path = st.session_state.result["txt_path"] or ""
-        st.toast("Đã xuất kết quả tư vấn", icon="✅")
-
     st.sidebar.markdown("## 📋 Thông tin đầu vào")
     st.sidebar.checkbox("Học lập trình", key="hoc_lap_trinh")
     st.sidebar.checkbox("Machine Learning", key="hoc_ml")
@@ -886,9 +926,26 @@ def render_sidebar():
     st.sidebar.checkbox("Cần nâng cấp RAM/SSD", key="can_nang_cap")
     st.sidebar.selectbox("Ngân sách", ["Thấp", "Trung bình", "Cao"], key="ngan_sach_label")
 
+    demo_cases, demo_error = load_sample_cases()
+    selected_demo_name = None
+    st.sidebar.write("")
+    if demo_error:
+        st.sidebar.error(demo_error)
+    elif not demo_cases:
+        demo_error = "Không đọc được dữ liệu demo mẫu"
+        st.sidebar.error(demo_error)
+    else:
+        demo_names = [case.get("name", f"Demo {index}") for index, case in enumerate(demo_cases, start=1)]
+        selected_demo_name = st.sidebar.selectbox(
+            "Chọn demo mẫu",
+            demo_names,
+            key="demo_sample_name",
+            format_func=pretty_demo_name,
+        )
+
     st.sidebar.write("")
     consult_clicked = st.sidebar.button("⚡  Tư vấn cấu hình", type="primary", use_container_width=True)
-    st.sidebar.button("📦  Chạy demo mẫu", use_container_width=True, on_click=run_demo_callback)
+    demo_clicked = st.sidebar.button("📦  Chạy demo mẫu", use_container_width=True)
     history_clicked = st.sidebar.button("🕘  Xem lịch sử", use_container_width=True)
     test_clicked = st.sidebar.button("🛡️  Kiểm thử hệ thống", use_container_width=True)
 
@@ -899,6 +956,23 @@ def render_sidebar():
         st.session_state.export_message = "Đã xuất kết quả tư vấn"
         st.session_state.export_path = st.session_state.result["txt_path"] or ""
         st.toast("Đã xuất kết quả tư vấn", icon="✅")
+
+    if demo_clicked:
+        if demo_error:
+            st.sidebar.error(demo_error)
+        else:
+            selected_case = next(
+                (case for case in demo_cases if case.get("name") == selected_demo_name),
+                None,
+            )
+            if selected_case is None:
+                st.sidebar.error("Không đọc được dữ liệu demo mẫu")
+            else:
+                st.session_state.result = infer_result(selected_case["input"], save_outputs=True)
+                st.session_state.page = "dashboard"
+                st.session_state.export_message = "Đã xuất kết quả tư vấn"
+                st.session_state.export_path = st.session_state.result["txt_path"] or ""
+                st.toast(f"Đã chạy demo: {pretty_demo_name(selected_demo_name)}", icon="✅")
 
     if history_clicked:
         st.session_state.page = "history"

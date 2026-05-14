@@ -9,6 +9,7 @@ CPU_KB = {
     "computer_vision": "CPU hieu nang cao, uu tien dong H-series",
     "ai_game_do_hoa": "CPU H-series, hieu nang cao",
     "may_mong_nhe_pin_lau": "Core i5 U-series hoac Ryzen 5 U-series tiet kiem dien",
+    "ai_tiet_kiem_cloud": "Core i5 hoặc Ryzen 5, ưu tiên hiệu năng ổn định",
     "cau_hinh_can_bang": "Core i5 hoac Ryzen 5",
 }
 
@@ -19,6 +20,7 @@ RAM_KB = {
     "computer_vision": "16GB den 32GB",
     "ai_game_do_hoa": "Toi thieu 16GB",
     "may_mong_nhe_pin_lau": "16GB",
+    "ai_tiet_kiem_cloud": "Tối thiểu 16GB",
     "cau_hinh_can_bang": "16GB",
 }
 
@@ -29,6 +31,7 @@ SSD_KB = {
     "computer_vision": "512GB den 1TB",
     "ai_game_do_hoa": "512GB den 1TB",
     "may_mong_nhe_pin_lau": "512GB",
+    "ai_tiet_kiem_cloud": "Tối thiểu 512GB",
     "cau_hinh_can_bang": "512GB",
 }
 
@@ -39,6 +42,7 @@ GPU_KB = {
     "computer_vision": "Nen co GPU roi RTX de xu ly anh va mo hinh CNN",
     "ai_game_do_hoa": "Can GPU roi RTX, dong laptop gaming/creator",
     "may_mong_nhe_pin_lau": "Khong bat buoc GPU roi, uu tien pin va trong luong",
+    "ai_tiet_kiem_cloud": "Không bắt buộc GPU rời; nên dùng Google Colab, Kaggle Notebook hoặc máy phòng lab cho mô hình nặng",
     "cau_hinh_can_bang": "GPU tuy ngan sach, khong bat buoc",
 }
 
@@ -49,6 +53,7 @@ MAN_HINH_KB = {
     "computer_vision": "Full HD tro len, mau sac tot",
     "ai_game_do_hoa": "Full HD, tan so quet va mau sac tot neu co dieu kien",
     "may_mong_nhe_pin_lau": "14 inch, Full HD, trong luong nhe",
+    "ai_tiet_kiem_cloud": "Full HD, 14–15.6 inch",
     "cau_hinh_can_bang": "Full HD, 14 den 15.6 inch",
 }
 
@@ -59,5 +64,6 @@ GIAI_THICH_KB = {
     "computer_vision": "Ban co xu ly anh/video hoac Computer Vision, nen can GPU roi, RAM lon va man hinh co chat luong hien thi tot.",
     "ai_game_do_hoa": "Ban vua hoc AI vua co nhu cau game/do hoa, nen can GPU roi va tan nhiet tot de dam bao hieu nang.",
     "may_mong_nhe_pin_lau": "Ban uu tien di chuyen, may nhe va pin lau, nen he thong uu tien CPU tiet kiem dien va thiet ke mong nhe.",
+    "ai_tiet_kiem_cloud": "Người dùng có nhu cầu học AI/Deep Learning/Computer Vision nhưng ngân sách thấp chưa phù hợp để mua laptop GPU mạnh. Hệ thống đề xuất cấu hình vừa đủ để học lập trình, xử lý dữ liệu và chạy mô hình nhỏ; với mô hình nặng nên dùng Google Colab, Kaggle Notebook hoặc máy phòng lab.",
     "cau_hinh_can_bang": "Nhu cau cua ban o muc tong hop, nen he thong de xuat cau hinh can bang giua hieu nang, chi phi va tinh di dong.",
 }

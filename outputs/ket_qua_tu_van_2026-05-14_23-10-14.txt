@@ -1,0 +1,42 @@
+﻿KET QUA TU VAN CAU HINH MAY TINH
+=================================
+Nhom nhu cau: ai_tiet_kiem_cloud
+Muc do phu hop: 100%
+
+Cau hinh khuyen nghi:
+- CPU: Core i5 hoặc Ryzen 5, ưu tiên hiệu năng ổn định
+- RAM: Tối thiểu 16GB
+- SSD: Tối thiểu 512GB
+- GPU: Không bắt buộc GPU rời; nên dùng Google Colab, Kaggle Notebook hoặc máy phòng lab cho mô hình nặng
+- Man hinh: Full HD, 14-15.6 inch
+
+Canh bao ngan sach:
+Dieu chinh ngan sach: Voi ngan sach thap, nen uu tien SSD va RAM truoc, khong bat buoc GPU roi.
+
+Goi y nang cap:
+- Nen chon may co kha nang nang cap RAM hoac SSD de su dung lau dai.
+
+Giai thich ket qua:
+Người dùng có nhu cầu học AI/Deep Learning/Computer Vision nhưng ngân sách thấp chưa phù hợp để mua laptop GPU mạnh. Hệ thống đề xuất cấu hình vừa đủ để học lập trình, xử lý dữ liệu và chạy mô hình nhỏ; với mô hình nặng nên dùng Google Colab, Kaggle Notebook hoặc máy phòng lab.
+
+Dau vet suy luan:
+- Người dùng học lập trình -> tăng điểm cho nhóm lập trình cơ bản, Machine Learning cơ bản, Deep Learning và cấu hình cân bằng.
+- Người dùng học Machine Learning -> tăng điểm cho nhóm Machine Learning cơ bản, Deep Learning, Computer Vision và AI kết hợp đồ họa.
+- Người dùng học Deep Learning -> tăng điểm mạnh cho nhóm Deep Learning, Computer Vision và AI kết hợp đồ họa.
+- Người dùng cần nâng cấp RAM/SSD -> tăng điểm cho nhóm cấu hình cân bằng.
+- Ngân sách thấp -> ưu tiên nhóm lập trình cơ bản và cấu hình tiết kiệm.
+
+Du lieu nguoi dung da cung cap:
+- hoc_lap_trinh: True
+- hoc_machine_learning: True
+- hoc_deep_learning: True
+- xu_ly_anh_video: False
+- choi_game_do_hoa: False
+- can_may_nhe_pin_lau: False
+- can_nang_cap: True
+- ngan_sach: thap
+
+Top 3 nhom nhu cau phu hop:
+- ai_tiet_kiem_cloud: 100%
+- deep_learning: 85%
+- machine_learning_co_ban: 60%

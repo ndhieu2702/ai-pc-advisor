@@ -68,5 +68,19 @@
       "can_nang_cap": false,
       "ngan_sach": "trung_binh"
     }
+  },
+  {
+    "name": "AI tiết kiệm + Cloud",
+    "expected_group": "ai_tiet_kiem_cloud",
+    "input": {
+      "hoc_lap_trinh": true,
+      "hoc_machine_learning": true,
+      "hoc_deep_learning": true,
+      "xu_ly_anh_video": false,
+      "choi_game_do_hoa": false,
+      "can_may_nhe_pin_lau": false,
+      "can_nang_cap": true,
+      "ngan_sach": "thap"
+    }
   }
 ]

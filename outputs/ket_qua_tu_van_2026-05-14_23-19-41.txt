@@ -1,0 +1,44 @@
+﻿KET QUA TU VAN CAU HINH MAY TINH
+=================================
+Nhom nhu cau: machine_learning_co_ban
+Mức độ chắc chắn theo luật: 85%
+
+Cau hinh khuyen nghi:
+- CPU: Core i5 hoac Ryzen 5 tro len
+- RAM: Toi thieu 16GB
+- SSD: Toi thieu 512GB
+- GPU: GPU roi khong bat buoc, uu tien CPU va RAM
+- Man hinh: Full HD, nen co khong gian hien thi tot
+
+Canh bao ngan sach:
+Điều chỉnh ngân sách: Với ngân sách thấp, nên ưu tiên SSD và RAM trước, không bắt buộc GPU rời.
+
+Các xung đột nếu có:
+- Không có xung đột lớn.
+
+Goi y nang cap:
+- Nen chon may co kha nang nang cap RAM hoac SSD de su dung lau dai.
+
+Giai thich ket qua:
+Ban co hoc Machine Learning, can CPU tot va RAM du lon de xu ly du lieu, chay Python va cac mo hinh ML co ban.
+
+Dau vet suy luan:
+- Người dùng học lập trình -> tăng điểm cho nhóm lập trình cơ bản, Machine Learning cơ bản, Deep Learning và cấu hình cân bằng.
+- Người dùng học Machine Learning -> tăng điểm cho nhóm Machine Learning cơ bản, Deep Learning, Computer Vision và AI kết hợp đồ họa.
+- Người dùng cần nâng cấp RAM/SSD -> tăng điểm cho nhóm cấu hình cân bằng.
+- Ngân sách thấp -> ưu tiên nhóm lập trình cơ bản và cấu hình tiết kiệm.
+
+Du lieu nguoi dung da cung cap:
+- hoc_lap_trinh: True
+- hoc_machine_learning: True
+- hoc_deep_learning: False
+- xu_ly_anh_video: False
+- choi_game_do_hoa: False
+- can_may_nhe_pin_lau: False
+- can_nang_cap: True
+- ngan_sach: thap
+
+Top 3 nhom nhu cau phu hop:
+- machine_learning_co_ban: 85%
+- lap_trinh_co_ban: 75%
+- cau_hinh_can_bang: 50%

@@ -1,0 +1,45 @@
+﻿KET QUA TU VAN CAU HINH MAY TINH
+=================================
+Nhom nhu cau: deep_learning
+Mức độ chắc chắn theo luật: 70%
+
+Cau hinh khuyen nghi:
+- CPU: Core i5/i7 H-series hoac Ryzen 5/7 H-series
+- RAM: Toi thieu 16GB, khuyen nghi 32GB
+- SSD: 512GB den 1TB
+- GPU: Nen co GPU roi RTX 3050/4050 tro len
+- Man hinh: Full HD, 15.6 inch tro len neu can lam viec lau
+
+Canh bao ngan sach:
+Điều chỉnh ngân sách: Với ngân sách trung bình, nên chọn RAM 16GB, SSD 512GB và CPU Core i5/Ryzen 5 trở lên.
+
+Các xung đột nếu có:
+- Không có xung đột lớn.
+
+Goi y nang cap:
+- Nen chon may co kha nang nang cap RAM hoac SSD de su dung lau dai.
+
+Giai thich ket qua:
+Ban co hoc Deep Learning, nen he thong uu tien CPU manh, RAM lon va GPU roi de ho tro huan luyen mo hinh.
+
+Dau vet suy luan:
+- Người dùng học lập trình -> tăng điểm cho nhóm lập trình cơ bản, Machine Learning cơ bản, Deep Learning và cấu hình cân bằng.
+- Người dùng học Machine Learning -> tăng điểm cho nhóm Machine Learning cơ bản, Deep Learning, Computer Vision và AI kết hợp đồ họa.
+- Người dùng học Deep Learning -> tăng điểm mạnh cho nhóm Deep Learning, Computer Vision và AI kết hợp đồ họa.
+- Người dùng cần nâng cấp RAM/SSD -> tăng điểm cho nhóm cấu hình cân bằng.
+- Ngân sách trung bình -> tăng điểm cho nhóm Machine Learning cơ bản, máy mỏng nhẹ và cấu hình cân bằng.
+
+Du lieu nguoi dung da cung cap:
+- hoc_lap_trinh: True
+- hoc_machine_learning: True
+- hoc_deep_learning: True
+- xu_ly_anh_video: False
+- choi_game_do_hoa: False
+- can_may_nhe_pin_lau: False
+- can_nang_cap: True
+- ngan_sach: trung_binh
+
+Top 3 nhom nhu cau phu hop:
+- deep_learning: 85%
+- cau_hinh_can_bang: 80%
+- machine_learning_co_ban: 75%
