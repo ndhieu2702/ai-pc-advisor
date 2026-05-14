@@ -76,30 +76,7 @@ class HeChuyenGiaTuVanMayTinhAI:
 
     def xac_dinh_nhom_nhu_cau(self):
         """Xác định nhóm nhu cầu theo tập luật điều kiện cũ."""
-        k = self.known
-        hoc_lap_trinh = k.get("hoc_lap_trinh", False)
-        hoc_ml = k.get("hoc_machine_learning", False)
-        hoc_dl = k.get("hoc_deep_learning", False)
-        xu_ly_anh = k.get("xu_ly_anh_video", False)
-        game_do_hoa = k.get("choi_game_do_hoa", False)
-        may_nhe = k.get("can_may_nhe_pin_lau", False)
-        ngan_sach = k.get("ngan_sach")
-
-        if hoc_dl and xu_ly_anh:
-            return "computer_vision"
-        if hoc_ml and game_do_hoa:
-            return "ai_game_do_hoa"
-        if may_nhe and not hoc_dl and not game_do_hoa:
-            return "may_mong_nhe_pin_lau"
-        if hoc_lap_trinh and hoc_ml and hoc_dl:
-            return "deep_learning"
-        if hoc_lap_trinh and hoc_ml and not hoc_dl:
-            return "machine_learning_co_ban"
-        if hoc_lap_trinh and not hoc_ml and not hoc_dl:
-            return "lap_trinh_co_ban"
-        if hoc_ml and may_nhe and ngan_sach == "trung_binh":
-            return "cau_hinh_can_bang"
-        return "cau_hinh_can_bang"
+        return self.suy_dien_nhom_chinh()
 
     def suy_dien_nhom_chinh(self):
         """Chọn nhóm kết luận chính theo luật ưu tiên của hệ chuyên gia."""
@@ -114,52 +91,52 @@ class HeChuyenGiaTuVanMayTinhAI:
 
         if ngan_sach == "thap" and (hoc_dl or xu_ly_anh or game_do_hoa):
             return "ai_tiet_kiem_cloud"
+        if may_nhe and (hoc_dl or xu_ly_anh or game_do_hoa):
+            return "cau_hinh_can_bang"
         if hoc_dl and xu_ly_anh and ngan_sach in ["trung_binh", "cao"]:
-            return "computer_vision"
-        if hoc_dl and ngan_sach in ["trung_binh", "cao"]:
-            return "deep_learning"
+            return "computer_vision_hieu_nang"
+        if hoc_dl and ngan_sach == "trung_binh":
+            return "deep_learning_co_ban"
+        if hoc_dl and ngan_sach == "cao":
+            return "deep_learning_hieu_nang"
+        if game_do_hoa and ngan_sach in ["trung_binh", "cao"]:
+            return "ai_game_do_hoa"
+        if may_nhe and not hoc_dl and not game_do_hoa and not xu_ly_anh:
+            return "may_mong_nhe_pin_lau"
         if hoc_ml and not hoc_dl:
             return "machine_learning_co_ban"
-        if may_nhe and not hoc_dl and not game_do_hoa:
-            return "may_mong_nhe_pin_lau"
-        if hoc_lap_trinh and not hoc_ml and not hoc_dl:
+        if hoc_lap_trinh and not hoc_ml and not hoc_dl and not xu_ly_anh and not game_do_hoa:
             return "lap_trinh_co_ban"
         return "cau_hinh_can_bang"
 
     def tinh_diem(self):
         """Tính điểm phù hợp cho từng nhóm nhu cầu dựa trên dữ liệu đã biết."""
         k = self.known
-        scores = {
-            "lap_trinh_co_ban": 0,
-            "machine_learning_co_ban": 0,
-            "deep_learning": 0,
-            "computer_vision": 0,
-            "ai_game_do_hoa": 0,
-            "may_mong_nhe_pin_lau": 0,
-            "ai_tiet_kiem_cloud": 0,
-            "cau_hinh_can_bang": 0,
-        }
+        scores = {nhom: 0 for nhom in self.cpu}
 
         if k.get("hoc_lap_trinh"):
             scores["lap_trinh_co_ban"] += 35
             scores["machine_learning_co_ban"] += 20
-            scores["deep_learning"] += 15
+            scores["deep_learning_co_ban"] += 10
+            scores["deep_learning_hieu_nang"] += 8
             scores["cau_hinh_can_bang"] += 20
         else:
             scores["may_mong_nhe_pin_lau"] += 5
 
         if k.get("hoc_machine_learning"):
             scores["machine_learning_co_ban"] += 40
-            scores["deep_learning"] += 25
-            scores["computer_vision"] += 15
+            scores["deep_learning_co_ban"] += 20
+            scores["deep_learning_hieu_nang"] += 15
+            scores["computer_vision_hieu_nang"] += 20
             scores["ai_game_do_hoa"] += 20
             scores["cau_hinh_can_bang"] += 20
         else:
             scores["lap_trinh_co_ban"] += 25
 
         if k.get("hoc_deep_learning"):
-            scores["deep_learning"] += 45
-            scores["computer_vision"] += 30
+            scores["deep_learning_co_ban"] += 45
+            scores["deep_learning_hieu_nang"] += 50
+            scores["computer_vision_hieu_nang"] += 30
             scores["ai_game_do_hoa"] += 15
         else:
             scores["lap_trinh_co_ban"] += 25
@@ -167,7 +144,8 @@ class HeChuyenGiaTuVanMayTinhAI:
             scores["may_mong_nhe_pin_lau"] += 20
 
         if k.get("xu_ly_anh_video"):
-            scores["computer_vision"] += 50
+            scores["computer_vision_hieu_nang"] += 60
+            scores["ai_tiet_kiem_cloud"] += 15
         if k.get("choi_game_do_hoa"):
             scores["ai_game_do_hoa"] += 70
         else:
@@ -175,6 +153,8 @@ class HeChuyenGiaTuVanMayTinhAI:
         if k.get("can_may_nhe_pin_lau"):
             scores["may_mong_nhe_pin_lau"] += 50
             scores["cau_hinh_can_bang"] += 20
+            if k.get("hoc_deep_learning") or k.get("xu_ly_anh_video") or k.get("choi_game_do_hoa"):
+                scores["cau_hinh_can_bang"] += 35
         if k.get("can_nang_cap"):
             scores["cau_hinh_can_bang"] += 10
 
@@ -184,10 +164,9 @@ class HeChuyenGiaTuVanMayTinhAI:
             if k.get("hoc_deep_learning") or k.get("xu_ly_anh_video") or k.get("choi_game_do_hoa"):
                 scores["ai_tiet_kiem_cloud"] += 100
                 nhom_bi_phat = {
-                    "deep_learning": 50,
-                    "computer_vision": 50,
                     "deep_learning_hieu_nang": 50,
                     "computer_vision_hieu_nang": 50,
+                    "deep_learning_co_ban": 25,
                     "ai_game_do_hoa": 40,
                 }
                 for ten_nhom, diem_tru in nhom_bi_phat.items():
@@ -195,32 +174,60 @@ class HeChuyenGiaTuVanMayTinhAI:
                         scores[ten_nhom] = max(0, scores[ten_nhom] - diem_tru)
         elif ngan_sach == "trung_binh":
             scores["machine_learning_co_ban"] += 15
+            scores["deep_learning_co_ban"] += 20
+            scores["computer_vision_hieu_nang"] += 10
             scores["may_mong_nhe_pin_lau"] += 10
             scores["cau_hinh_can_bang"] += 30
         elif ngan_sach == "cao":
-            scores["deep_learning"] += 15
-            scores["computer_vision"] += 10
+            scores["deep_learning_hieu_nang"] += 30
+            scores["computer_vision_hieu_nang"] += 25
             scores["ai_game_do_hoa"] += 20
 
         return scores
+
+    def lay_top_3(self, scores, nhom_chinh):
+        """Lấy top 3 nhóm phù hợp, luôn ưu tiên nhóm kết luận chính ở đầu."""
+        sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        top_3 = sorted_scores[:3]
+        if nhom_chinh not in [nhom for nhom, _ in top_3]:
+            top_3 = [(nhom_chinh, scores.get(nhom_chinh, 0))]
+            top_3.extend(item for item in sorted_scores if item[0] != nhom_chinh)
+            top_3 = top_3[:3]
+        return top_3
 
     def phat_hien_xung_dot(self):
         """Phát hiện các xung đột lớn giữa nhu cầu và điều kiện sử dụng."""
         k = self.known
         xung_dot = []
         ngan_sach = k.get("ngan_sach")
-        can_cau_hinh_cao = (
-            k.get("hoc_deep_learning")
-            or k.get("xu_ly_anh_video")
-            or k.get("choi_game_do_hoa")
-        )
 
-        if ngan_sach == "thap" and can_cau_hinh_cao:
-            xung_dot.append("Ngân sách thấp nhưng nhu cầu cần cấu hình cao")
-        if k.get("can_may_nhe_pin_lau") and can_cau_hinh_cao:
-            xung_dot.append("Nhu cầu máy nhẹ pin lâu xung đột với tác vụ hiệu năng cao")
-        if k.get("choi_game_do_hoa") and ngan_sach == "thap":
-            xung_dot.append("Game/đồ họa cần GPU nhưng ngân sách thấp")
+        if ngan_sach == "thap" and k.get("hoc_deep_learning"):
+            xung_dot.append(
+                "Ngân sách thấp nhưng người dùng có nhu cầu học Deep Learning. "
+                "Nên ưu tiên RAM/SSD và sử dụng Google Colab hoặc máy phòng lab cho mô hình nặng."
+            )
+        if ngan_sach == "thap" and k.get("xu_ly_anh_video"):
+            xung_dot.append(
+                "Ngân sách thấp nhưng người dùng có nhu cầu xử lý ảnh / Computer Vision. "
+                "Laptop GPU mạnh có thể vượt ngân sách hiện tại."
+            )
+        if ngan_sach == "thap" and k.get("choi_game_do_hoa"):
+            xung_dot.append(
+                "Ngân sách thấp nhưng người dùng có nhu cầu game / đồ họa. "
+                "Nên cân nhắc tăng ngân sách nếu cần GPU rời."
+            )
+        if k.get("can_may_nhe_pin_lau") and k.get("hoc_deep_learning"):
+            xung_dot.append(
+                "Nhu cầu máy nhẹ, pin lâu xung đột với Deep Learning vì tác vụ này thường cần hiệu năng cao."
+            )
+        if k.get("can_may_nhe_pin_lau") and k.get("xu_ly_anh_video"):
+            xung_dot.append(
+                "Nhu cầu máy nhẹ, pin lâu xung đột với xử lý ảnh / Computer Vision vì tác vụ này thường cần tài nguyên cao."
+            )
+        if k.get("can_may_nhe_pin_lau") and k.get("choi_game_do_hoa"):
+            xung_dot.append(
+                "Nhu cầu máy nhẹ, pin lâu xung đột với game / đồ họa vì các tác vụ này thường cần GPU mạnh."
+            )
 
         return xung_dot
 
@@ -249,6 +256,8 @@ class HeChuyenGiaTuVanMayTinhAI:
 
         if conflicts:
             certainty = min(certainty, 85)
+        if len(conflicts) >= 2:
+            certainty = min(certainty, 80)
 
         if gap < 10:
             certainty = min(certainty, 75)
@@ -382,7 +391,7 @@ class HeChuyenGiaTuVanMayTinhAI:
                 or (co_game_do_hoa and co_may_nhe)
                 or (co_xu_ly_anh and co_may_nhe)
             )
-            mixed_need = so_nhu_cau >= 2
+            mixed_need = so_nhu_cau >= 2 and ngan_sach != "cao"
             if co_xung_dot:
                 du_lieu_can_bang = "Hiện tại: Có xung đột giữa nhu cầu hiệu năng và tính di động"
             elif mixed_need:
@@ -459,7 +468,12 @@ class HeChuyenGiaTuVanMayTinhAI:
         ngan_sach = self.known.get("ngan_sach")
         if nhom == "ai_tiet_kiem_cloud":
             return "Ngân sách hiện tại chưa đủ để mua cấu hình AI hiệu năng cao có GPU RTX. Hệ thống đề xuất hướng học tập tiết kiệm hơn: ưu tiên RAM/SSD và sử dụng Google Colab, Kaggle Notebook hoặc máy phòng lab cho các mô hình nặng."
-        if ngan_sach == "thap" and nhom in ["deep_learning", "computer_vision", "ai_game_do_hoa"]:
+        if ngan_sach == "thap" and nhom in [
+            "deep_learning_co_ban",
+            "deep_learning_hieu_nang",
+            "computer_vision_hieu_nang",
+            "ai_game_do_hoa",
+        ]:
             return "Cảnh báo ngân sách: Nhu cầu của bạn cần cấu hình khá mạnh, nhưng ngân sách đang ở mức thấp. Nên ưu tiên RAM/SSD trước, có thể dùng Google Colab hoặc máy phòng lab để chạy mô hình nặng."
         if ngan_sach == "thap":
             return "Điều chỉnh ngân sách: Với ngân sách thấp, nên ưu tiên SSD và RAM trước, không bắt buộc GPU rời."
@@ -543,12 +557,12 @@ class HeChuyenGiaTuVanMayTinhAI:
             file.write("\nCanh bao ngan sach:\n")
             file.write(f"{self.canh_bao_ngan_sach(nhom)}\n")
 
-            file.write("\nCác xung đột nếu có:\n")
+            file.write("\nCẢNH BÁO XUNG ĐỘT:\n")
             if xung_dot:
                 for dong in xung_dot:
                     file.write(f"- {dong}\n")
             else:
-                file.write("- Không có xung đột lớn.\n")
+                file.write("- Không phát hiện xung đột lớn.\n")
 
             if self.known.get("can_nang_cap"):
                 file.write("\nGoi y nang cap:\n")
@@ -576,9 +590,8 @@ class HeChuyenGiaTuVanMayTinhAI:
         scores = self.tinh_diem()
 
         # Bộ suy diễn chọn nhóm theo luật ưu tiên và điểm phù hợp
-        top_3 = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:3]
-
         nhom = self.suy_dien_nhom_chinh()
+        top_3 = self.lay_top_3(scores, nhom)
         diem = self.tinh_muc_do_chac_chan(scores, nhom)
         xung_dot = self.phat_hien_xung_dot()
 

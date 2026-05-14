@@ -24,8 +24,8 @@ GROUP_LABELS = {
     "may_mong_nhe_pin_lau": "Máy mỏng nhẹ, pin lâu",
     "ai_tiet_kiem_cloud": "AI tiết kiệm + Cloud",
     "deep_learning_co_ban": "Deep Learning cơ bản",
-    "deep_learning_hieu_nang": "Deep Learning hiệu năng",
-    "computer_vision_hieu_nang": "Computer Vision hiệu năng",
+    "deep_learning_hieu_nang": "Deep Learning hiệu năng cao",
+    "computer_vision_hieu_nang": "Computer Vision hiệu năng cao",
     "cau_hinh_can_bang": "Cấu hình cân bằng",
 }
 
@@ -46,8 +46,8 @@ def pretty_group(name):
         "may_mong_nhe_pin_lau": "Máy mỏng nhẹ, pin lâu",
         "ai_tiet_kiem_cloud": "AI tiết kiệm + Cloud",
         "deep_learning_co_ban": "Deep Learning cơ bản",
-        "deep_learning_hieu_nang": "Deep Learning hiệu năng",
-        "computer_vision_hieu_nang": "Computer Vision hiệu năng",
+        "deep_learning_hieu_nang": "Deep Learning hiệu năng cao",
+        "computer_vision_hieu_nang": "Computer Vision hiệu năng cao",
         "cau_hinh_can_bang": "Cấu hình cân bằng",
     }
     return mapping.get(name, name)
@@ -209,13 +209,24 @@ def inject_css():
         }
 
         .block-container {
-            padding: 2.4rem 1.15rem 1.25rem 1.15rem;
-            max-width: 1350px;
+            max-width: 1280px !important;
+            padding-top: 2rem !important;
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
+            padding-bottom: 1.5rem !important;
             margin-left: auto;
             margin-right: auto;
         }
 
+        @media (min-width: 1400px) {
+            .block-container {
+                max-width: 1400px !important;
+            }
+        }
+
         [data-testid="stSidebar"] {
+            min-width: 300px !important;
+            max-width: 320px !important;
             background: #ffffff;
             border-right: 1px solid #e2e8f0;
             box-shadow: 8px 0 30px rgba(15, 23, 42, 0.04);
@@ -408,10 +419,10 @@ def inject_css():
         .result-card {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 1.15rem;
-            padding: 1.45rem 1.55rem 1.25rem 1.55rem;
-            box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
-            margin-bottom: 1.25rem;
+            border-radius: 22px;
+            padding: 30px 34px;
+            box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+            margin-bottom: 24px;
         }
 
         .result-title {
@@ -459,9 +470,9 @@ def inject_css():
         .card {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 1rem;
-            padding: 1.35rem 1.3rem;
-            box-shadow: 0 10px 22px rgba(15, 23, 42, 0.07);
+            border-radius: 22px;
+            padding: 30px 34px;
+            box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
             height: 100%;
         }
 
@@ -476,11 +487,11 @@ def inject_css():
         .metric-box {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 1rem;
-            padding: 1.45rem 1.15rem 1.35rem 1.15rem;
-            min-height: 11.25rem;
+            border-radius: 20px;
+            padding: 24px 20px;
+            min-height: 190px;
             text-align: center;
-            box-shadow: 0 10px 22px rgba(15, 23, 42, 0.07);
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -496,13 +507,13 @@ def inject_css():
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.75rem;
+            font-size: 38px;
             margin-bottom: 0.75rem;
             border: 1px solid #bfdbfe;
         }
 
         .metric-title {
-            font-size: 1.03rem;
+            font-size: 18px;
             font-weight: 850;
             color: var(--text);
             margin-bottom: 0.55rem;
@@ -510,8 +521,8 @@ def inject_css():
 
         .metric-text {
             color: var(--text);
-            font-size: 0.96rem;
-            line-height: 1.46;
+            font-size: 15px;
+            line-height: 1.55;
         }
 
         .section-title {
@@ -968,8 +979,8 @@ def create_expert(known):
 def infer_result(known, save_outputs=False):
     he = create_expert(known)
     scores = he.tinh_diem()
-    top_3 = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:3]
     nhom = he.suy_dien_nhom_chinh()
+    top_3 = he.lay_top_3(scores, nhom)
     diem = he.tinh_muc_do_chac_chan(scores, nhom)
     conflicts = he.phat_hien_xung_dot()
     txt_path = None
@@ -1093,20 +1104,11 @@ def render_result_card(result):
     nhom = result["nhom"]
     diem = result["diem"]
     he = result["he"]
-    conflicts = result.get("conflicts", [])
     group_name = pretty_group(nhom)
     warning_blocks = []
     if nhom == "ai_tiet_kiem_cloud":
         warning_blocks.append(
             f'<div class="notice">{html_escape(he.canh_bao_ngan_sach(nhom))}</div>'
-        )
-    if conflicts:
-        conflict_items = "".join(
-            f"<li>{html_escape(conflict)}</li>"
-            for conflict in conflicts
-        )
-        warning_blocks.append(
-            f'<div class="notice"><b>Cảnh báo:</b><ul class="warning-list">{conflict_items}</ul></div>'
         )
     warning_html = "".join(warning_blocks)
     st.markdown(
@@ -1123,6 +1125,26 @@ def render_result_card(result):
                 <div class="score-badge">{diem}%</div>
             </div>
             {warning_html}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_conflict_card(result):
+    conflicts = result.get("conflicts", [])
+    if not conflicts:
+        return
+
+    conflict_items = "".join(
+        f"<li>{html_escape(conflict)}</li>"
+        for conflict in conflicts
+    )
+    st.markdown(
+        f"""
+        <div class="card">
+            <div class="section-title">⚠️ Cảnh báo xung đột nhu cầu</div>
+            <ul class="warning-list">{conflict_items}</ul>
         </div>
         """,
         unsafe_allow_html=True,
@@ -1282,6 +1304,7 @@ def render_test_page():
 
 def render_dashboard(result):
     render_result_card(result)
+    render_conflict_card(result)
     render_metric_cards(result)
     st.write("")
     render_top3_and_explanation(result)

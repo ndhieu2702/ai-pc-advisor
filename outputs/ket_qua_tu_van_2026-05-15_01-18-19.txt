@@ -1,0 +1,41 @@
+﻿KET QUA TU VAN CAU HINH MAY TINH
+=================================
+Nhom nhu cau: computer_vision_hieu_nang
+Mức độ chắc chắn theo luật: 100%
+
+Cau hinh khuyen nghi:
+- CPU: Core i7/Ryzen 7 H-series
+- RAM: 16GB-32GB
+- SSD: 1TB
+- GPU: RTX 4050/4060 trở lên
+- Man hinh: Full HD/2K, màu sắc tốt
+
+Canh bao ngan sach:
+Điều chỉnh ngân sách: Với ngân sách cao, có thể ưu tiên CPU H-series, RAM 32GB, SSD 1TB và GPU RTX.
+
+CẢNH BÁO XUNG ĐỘT:
+- Không phát hiện xung đột lớn.
+
+Giai thich ket qua:
+Người dùng có nhu cầu xử lý ảnh hoặc Computer Vision, thường cần GPU rời, RAM lớn và màn hình có chất lượng hiển thị tốt để làm việc với dữ liệu hình ảnh.
+
+Dau vet suy luan:
+- Người dùng học Machine Learning -> tăng điểm cho nhóm Machine Learning cơ bản, Deep Learning, Computer Vision và AI kết hợp đồ họa.
+- Người dùng học Deep Learning -> tăng điểm mạnh cho nhóm Deep Learning, Computer Vision và AI kết hợp đồ họa.
+- Người dùng xử lý ảnh/video -> tăng điểm mạnh cho nhóm Computer Vision.
+- Ngân sách cao -> tăng điểm cho nhóm Deep Learning, Computer Vision và AI kết hợp đồ họa.
+
+Du lieu nguoi dung da cung cap:
+- hoc_lap_trinh: False
+- hoc_machine_learning: True
+- hoc_deep_learning: True
+- xu_ly_anh_video: True
+- choi_game_do_hoa: False
+- can_may_nhe_pin_lau: False
+- can_nang_cap: False
+- ngan_sach: cao
+
+Top 3 nhom nhu cau phu hop:
+- computer_vision_hieu_nang: 100%
+- deep_learning_hieu_nang: 95%
+- deep_learning_co_ban: 65%
